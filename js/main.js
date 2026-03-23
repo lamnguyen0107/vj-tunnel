@@ -229,7 +229,7 @@ ui.setTunnelControls({ wave: 0.5, twist: 0.5, chaos: 0.5 });
 renderer.setCloneOptions(state.cloneCount, state.cloneFreeFly);
 renderer.setObjectScale(state.objectSize);
 renderer.setObjectRotation(state.objectRotation.x, state.objectRotation.y, state.objectRotation.z);
-renderer.loadObjectUrl('./assets/ai_robot.glb').then(() => {
+renderer.loadObjectUrl('./assets/cyber_core.glb').then(() => {
   renderer.setCloneOptions(state.cloneCount, state.cloneFreeFly);
   renderer.setObjectScale(state.objectSize);
   renderer.setObjectRotation(state.objectRotation.x, state.objectRotation.y, state.objectRotation.z);
