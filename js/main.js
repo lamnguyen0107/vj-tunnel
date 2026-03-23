@@ -20,6 +20,10 @@ const state = {
   speed: 0.5,
   sensitivity: 1.0,
   kaleidoscope: 0.5,
+  kaleidoscopeMode: 0,
+  kaleidoscopeAutoMode: true,
+  kaleidoscopeAngle: 0,
+  kaleidoscopeFlash: 0,
   colorMode: 'theme',
   livePreset: 'drop',
   objectEnabled: true,
@@ -137,6 +141,8 @@ const ui = new UIController({
     audio.setSensitivity(v);
   },
   onKaleidoscopeChange: (v) => { state.kaleidoscope = v; },
+  onKaleidoscopeModeChange: (m) => { state.kaleidoscopeMode = m; },
+  onKaleidoscopeAutoModeChange: (b) => { state.kaleidoscopeAutoMode = b; },
   onWaveChange: (v) => {
     state.current.waveIntensity = v;
     state.target.waveIntensity = v;
@@ -227,6 +233,8 @@ state.target.colorShiftSpeed = 0.7;
 state.current.fractalDepth = 0.5;
 state.target.fractalDepth = 0.5;
 ui.setTunnelControls({ wave: 0.5, twist: 0.5, chaos: 0.5 });
+ui.setKaleidoscopeMode(state.kaleidoscopeMode);
+ui.setKaleidoscopeAutoMode(state.kaleidoscopeAutoMode);
 renderer.setCloneOptions(state.cloneCount, state.cloneFreeFly);
 renderer.setObjectScale(state.objectSize);
 renderer.setObjectRotation(state.objectRotation.x, state.objectRotation.y, state.objectRotation.z);
@@ -370,6 +378,41 @@ function animate() {
     ? clamp01(state.kaleidoscope * (0.86 + midN * 0.55) + highN * 0.22)
     : state.kaleidoscope;
 
+  // Auto Mix logic - sync with music pitch/frequency!
+  if (state.kaleidoscopeAutoMode) {
+    // Continually rotate slightly, speeding up heavily on beats
+    state.kaleidoscopeAngle += clock.delta * (0.05 + jump * 0.45);
+    
+    if (!state.lastMixTime) state.lastMixTime = state.time;
+    
+    // Logic: If there is a noticeable jump (beat)
+    // Map the relative energy of Highs/Mids to a target mode index.
+    // Higher pitch energy -> Higher mode indices.
+    const timeSinceLast = state.time - state.lastMixTime;
+    const isBeat = jump > 0.55; 
+    
+    if (isBeat && timeSinceLast > 0.65) {
+       // Calculation: use high frequency energy to determine the "next focus"
+       // We'll map the ratio of high/mid to pick from a specific range of 10 modes.
+       // This makes it feel "pitched" rather than random.
+       const pitchFactor = (audio.high * 1.5 + audio.mid * 0.5) / (audio.bass + 0.1);
+       let targetMode = Math.floor(clamp01(pitchFactor * 0.5) * 10);
+       
+       // Ensure it actually changed
+       if (targetMode === state.kaleidoscopeMode) {
+         targetMode = (targetMode + 1) % 10;
+       }
+       
+       state.kaleidoscopeMode = targetMode;
+       state.lastMixTime = state.time;
+       state.kaleidoscopeFlash = 0.8 + jump * 0.4; // Flash follows beat intensity
+       if (ui && ui.setKaleidoscopeMode) ui.setKaleidoscopeMode(state.kaleidoscopeMode);
+    }
+  }
+
+  // Decay the flash value over time
+  state.kaleidoscopeFlash = Math.max(0, state.kaleidoscopeFlash - clock.delta * 2.5);
+
   if (isMusicReactive) {
     ui.setCoreControls({
       speed: autoSpeed,
@@ -389,6 +432,9 @@ function animate() {
   }, {
     speed:           autoSpeed,
     kaleidoscope:    autoKaleidoscope,
+    kaleidoscopeMode: state.kaleidoscopeMode,
+    kaleidoscopeAngle: state.kaleidoscopeAngle,
+    kaleidoscopeFlash: state.kaleidoscopeFlash,
     distortion:      state.current.distortion,
     glowIntensity:   state.current.glowIntensity,
     colorShiftSpeed: state.current.colorShiftSpeed,

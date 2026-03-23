@@ -1,4 +1,4 @@
-﻿/* ======================================================
+/* ======================================================
    TUNNEL VJ â€” Global Styles
    Premium dark UI with glassmorphism controls
    ====================================================== */
@@ -300,6 +300,71 @@ html, body {
   row-gap: 4px;
   margin-bottom: 8px;
 }
+
+/* Kaleidoscope Grid */
+.kaleido-auto-row {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+.kaleido-auto-row label {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+}
+
+.k-label-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.k-mode-name {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.k-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 15px;
+}
+.k-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--bg-panel-border);
+  color: var(--text-dim);
+  border-radius: 4px;
+  width: 100%;
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-size: 14px;
+}
+.k-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  transform: translateY(-2px);
+}
+.k-item:active {
+  transform: scale(0.85);
+}
+.k-item.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-dim);
+  transform: scale(1.05);
+}
+.k-item i {
+  pointer-events: none;
+}
 .slider-group:last-child { margin-bottom: 0; }
 .slider-group label {
   font-size: 11px;
@@ -397,6 +462,7 @@ html, body {
 }
 .color-row input[type="color"] {
   -webkit-appearance: none;
+  appearance: none;
   width: 40px; height: 26px;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-sm);

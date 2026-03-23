@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -119,6 +120,28 @@
           <label id="label-kaleidoscope" for="kaleidoscope-slider">Kaleidoscope</label>
           <input type="range" id="kaleidoscope-slider" min="0" max="100" value="50" />
           <span class="slider-value" id="kaleidoscope-value">50</span>
+        </div>
+        
+        <div class="toggle-row kaleido-auto-row">
+          <label id="label-kaleidoscope-auto" for="kaleidoscope-auto-toggle">AUTO MIX KALEIDOSCOPE</label>
+          <input id="kaleidoscope-auto-toggle" type="checkbox" checked />
+        </div>
+
+        <div class="k-label-row">
+          <span id="label-kaleidoscope-mode-name" class="k-mode-name">Radial</span>
+        </div>
+
+        <div id="kaleido-grid" class="k-grid">
+          <button class="k-item active" data-mode="0" title="Radial"><i class="fas fa-asterisk"></i></button>
+          <button class="k-item" data-mode="1" title="Mirror"><i class="fas fa-th-large"></i></button>
+          <button class="k-item" data-mode="2" title="Triangle"><i class="fas fa-play" style="transform: rotate(270deg);"></i></button>
+          <button class="k-item" data-mode="3" title="Spiral"><i class="fas fa-hurricane"></i></button>
+          <button class="k-item" data-mode="4" title="Diamond"><i class="fas fa-gem"></i></button>
+          <button class="k-item" data-mode="5" title="HexGrid"><i class="fas fa-draw-polygon"></i></button>
+          <button class="k-item" data-mode="6" title="Zoom"><i class="fas fa-search-plus"></i></button>
+          <button class="k-item" data-mode="7" title="Fractal"><i class="fas fa-snowflake"></i></button>
+          <button class="k-item" data-mode="8" title="Polka"><i class="fas fa-circle"></i></button>
+          <button class="k-item" data-mode="9" title="Ribbon"><i class="fas fa-wave-square"></i></button>
         </div>
         <div class="slider-group">
           <label id="label-wave" for="wave-slider">Lượn sóng</label>

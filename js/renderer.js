@@ -49,7 +49,10 @@ export class TunnelRenderer {
         uMid:             { value: 0 },
         uHigh:            { value: 0 },
         uKaleidoscope:    { value: 0.5 },
-        uDistortion:      { value: 0.35 },
+        uKaleidoscopeMode:{ value: 0 },
+        uKaleidoscopeAngle:{ value: 0 },
+        uKaleidoscopeFlash:{ value: 0 },
+        uDistortion:      { value: 0.8 },
         uGlowIntensity:   { value: 1.6 },
         uColor1:          { value: new THREE.Vector3(0, 1, 1) },
         uColor2:          { value: new THREE.Vector3(1, 0, 1) },
@@ -482,7 +485,10 @@ export class TunnelRenderer {
     u.uMid.value = audioData.mid;
     u.uHigh.value = audioData.high;
     u.uKaleidoscope.value = settings.kaleidoscope;
-    u.uDistortion.value = settings.distortion;
+    u.uKaleidoscopeMode.value = settings.kaleidoscopeMode || 0;
+    u.uKaleidoscopeAngle.value = settings.kaleidoscopeAngle || 0;
+    u.uKaleidoscopeFlash.value = settings.kaleidoscopeFlash || 0;
+    u.uDistortion.value = settings.distortion ?? 0.8;
     u.uGlowIntensity.value = settings.glowIntensity;
     u.uColorShiftSpeed.value = settings.colorShiftSpeed;
     u.uFractalDepth.value = settings.fractalDepth;

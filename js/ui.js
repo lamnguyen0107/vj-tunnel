@@ -38,6 +38,8 @@ export class UIController {
       labelSpeed: document.getElementById('label-speed'),
       labelSensitivity: document.getElementById('label-sensitivity'),
       labelKaleidoscope: document.getElementById('label-kaleidoscope'),
+      labelKaleidoscopeAuto: document.getElementById('label-kaleidoscope-auto'),
+      kaleidoscopeModeName: document.getElementById('label-kaleidoscope-mode-name'),
       labelWave: document.getElementById('label-wave'),
       labelTwist: document.getElementById('label-twist'),
       labelParticle: document.getElementById('label-particle'),
@@ -85,6 +87,8 @@ export class UIController {
       particleShapeSelect: document.getElementById('particle-shape-select'),
       objectDistanceSelect: document.getElementById('object-distance-select'),
       automixToggle: document.getElementById('automix-toggle'),
+      kaleidoscopeAutoToggle: document.getElementById('kaleidoscope-auto-toggle'),
+      kaleidoscopeItems: document.querySelectorAll('.k-item'),
       objectEnabledToggle: document.getElementById('object-enabled-toggle'),
       colorModeSelect: document.getElementById('color-mode-select'),
       objectColorModeSelect: document.getElementById('object-color-mode-select'),
@@ -157,6 +161,11 @@ export class UIController {
         particleShape: 'Shape hạt',
         objectDistance: 'Khoảng cách',
         automix: 'Trộn ngẫu nhiên',
+        kaleidoscopeAuto: 'AUTO MIX KALEIDOSCOPE',
+        kaleidoscopeModes: [
+          'Radial', 'Mirror', 'Triangle', 'Spiral', 'Diamond',
+          'HexGrid', 'Zoom', 'Fractal', 'Polka', 'Ribbon'
+        ],
         objectEnabled: 'Hiện object',
         colorMode: 'Chế độ màu',
         modeTheme: 'Theo chủ đề',
@@ -229,6 +238,11 @@ export class UIController {
         particleShape: 'Particle Shape',
         objectDistance: 'Object Distance',
         automix: 'Random Mix',
+        kaleidoscopeAuto: 'AUTO MIX KALEIDOSCOPE',
+        kaleidoscopeModes: [
+          'Radial', 'Mirror', 'Triangle', 'Spiral', 'Diamond',
+          'HexGrid', 'Zoom', 'Fractal', 'Polka', 'Ribbon'
+        ],
         objectEnabled: 'Show Object',
         colorMode: 'Color Mode',
         modeTheme: 'Theme Colors',
@@ -314,6 +328,33 @@ export class UIController {
       this.callbacks.onPlayPause(this._isPlaying);
     });
     this._bindSlider('volumeSlider', 'volumeValue', v => this.callbacks.onVolumeChange(v / 100));
+
+    // Kaleidoscope UI
+    if (this.els.kaleidoscopeAutoToggle) {
+      this.els.kaleidoscopeAutoToggle.addEventListener('change', e => {
+        if (this.callbacks.onKaleidoscopeAutoModeChange) {
+          this.callbacks.onKaleidoscopeAutoModeChange(e.target.checked);
+        }
+      });
+    }
+    if (this.els.kaleidoscopeItems) {
+      this.els.kaleidoscopeItems.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const mode = parseInt(e.currentTarget.getAttribute('data-mode'));
+          if (this.callbacks.onKaleidoscopeModeChange) {
+            this.callbacks.onKaleidoscopeModeChange(mode);
+          }
+          this.setKaleidoscopeMode(mode);
+          
+          if (this.els.kaleidoscopeAutoToggle && this.els.kaleidoscopeAutoToggle.checked) {
+            this.els.kaleidoscopeAutoToggle.checked = false;
+            if (this.callbacks.onKaleidoscopeAutoModeChange) {
+              this.callbacks.onKaleidoscopeAutoModeChange(false);
+            }
+          }
+        });
+      });
+    }
 
     // Sliders
     this._bindSlider('speedSlider', 'speedValue', v => this.callbacks.onSpeedChange(v / 100));
@@ -439,6 +480,29 @@ export class UIController {
     this.els.bgColor.disabled = disable;
   }
 
+  setKaleidoscopeMode(mode) {
+    if (!this.els.kaleidoscopeItems) return;
+    this.els.kaleidoscopeItems.forEach(btn => {
+      const btnMode = parseInt(btn.getAttribute('data-mode'));
+      if (btnMode === mode) {
+        btn.classList.add('active');
+        // Update label
+        const modeNames = this._translations[this._currentLanguage]?.kaleidoscopeModes;
+        if (this.els.kaleidoscopeModeName && modeNames && modeNames[mode]) {
+          this.els.kaleidoscopeModeName.textContent = modeNames[mode];
+        }
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  setKaleidoscopeAutoMode(enabled) {
+    if (this.els.kaleidoscopeAutoToggle) {
+      this.els.kaleidoscopeAutoToggle.checked = Boolean(enabled);
+    }
+  }
+
   setLivePreset(presetKey) {
     const btns = [
       this.els.presetDrop,
@@ -501,6 +565,8 @@ export class UIController {
     this.els.labelSpeed.textContent = t.speed;
     this.els.labelSensitivity.textContent = t.sensitivity;
     this.els.labelKaleidoscope.textContent = t.kaleidoscope;
+    if (this.els.labelKaleidoscopeAuto) this.els.labelKaleidoscopeAuto.textContent = t.kaleidoscopeAuto;
+
     this.els.labelWave.textContent = t.wave;
     this.els.labelTwist.textContent = t.twist;
     this.els.labelParticle.textContent = t.particle;
