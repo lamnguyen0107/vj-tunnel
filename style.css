@@ -56,7 +56,8 @@ html, body {
   top: 20px;
   left: 20px;
   bottom: 20px;
-  width: 280px;
+  width: 320px;
+  max-width: calc(100vw - 16px);
   z-index: 100;
   background: var(--bg-panel);
   backdrop-filter: blur(14px) saturate(1.15);
@@ -293,7 +294,14 @@ html, body {
 /* Sliders */
 .slider-group { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .slider-group:last-child { margin-bottom: 0; }
-.slider-group label { font-size: 11px; color: var(--text-dim); width: 92px; flex-shrink: 0; }
+.slider-group label {
+  font-size: 11px;
+  color: var(--text-dim);
+  width: 106px;
+  flex-shrink: 0;
+  line-height: 1.25;
+  white-space: normal;
+}
 .slider-group input[type="range"] {
   flex: 1;
   -webkit-appearance: none;
@@ -323,7 +331,7 @@ html, body {
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-dim);
-  width: 24px;
+  width: 40px;
   text-align: right;
   flex-shrink: 0;
 }
@@ -490,7 +498,7 @@ input[type="color"]:disabled {
 
 @media (max-width: 900px) {
   .ui-panel {
-    width: min(92vw, 420px);
+    width: min(96vw, 440px);
     top: auto;
     left: 50%;
     bottom: 12px;
@@ -519,7 +527,7 @@ input[type="color"]:disabled {
   }
 
   .slider-group label {
-    width: 98px;
+    width: 108px;
     font-size: 12px;
   }
 
@@ -541,9 +549,9 @@ input[type="color"]:disabled {
 
 @media (max-width: 520px) {
   .ui-panel {
-    width: calc(100vw - 12px);
+    width: calc(100vw - 8px);
     left: 6px;
-    right: 6px;
+    right: 2px;
     transform: none;
     bottom: 6px;
     border-radius: 12px;
@@ -565,6 +573,20 @@ input[type="color"]:disabled {
 
   .compact-select {
     width: 138px;
+  }
+
+  .slider-group {
+    gap: 8px;
+  }
+
+  .slider-group label {
+    width: 96px;
+    font-size: 11px;
+  }
+
+  .slider-value {
+    width: 36px;
+    font-size: 9px;
   }
 }
 

@@ -146,42 +146,8 @@ export class TunnelRenderer {
   }
 
   _createDefaultObject() {
-    const group = new THREE.Group();
-
-    const glassGeo = new THREE.SphereGeometry(0.48, 48, 48);
-    const glassMat = new THREE.MeshStandardMaterial({
-      color: 0xf4fff8,
-      roughness: 0.02,
-      metalness: 1.0,
-      envMapIntensity: 3.1,
-    });
-    const glassShell = new THREE.Mesh(glassGeo, glassMat);
-    glassShell.userData.baseEmissiveIntensity = 0.0;
-
-    const coreGeo = new THREE.IcosahedronGeometry(0.18, 2);
-    const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x66ff99,
-      emissive: 0x44ffcc,
-      emissiveIntensity: 1.05,
-      roughness: 0.24,
-      metalness: 0.15,
-      transparent: true,
-      opacity: 0.86,
-    });
-    const core = new THREE.Mesh(coreGeo, coreMat);
-    core.userData.baseEmissiveIntensity = 1.05;
-
-    const ringGeo = new THREE.TorusGeometry(0.32, 0.013, 12, 96);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0x6effb0,
-      transparent: true,
-      opacity: 0.72,
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = Math.PI * 0.5;
-
-    group.add(glassShell, core, ring);
-    return group;
+    // No geometric fallback: robot model is the intended default object.
+    return new THREE.Group();
   }
 
   _disposeObject(node) {
