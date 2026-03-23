@@ -23,9 +23,9 @@ const state = {
   colorMode: 'theme',
   livePreset: 'drop',
   objectEnabled: true,
-  cloneCount: 1,
+  cloneCount: 5,
   cloneFreeFly: false,
-  objectSize: 1.0,
+  objectSize: 0.35,
   objectRotation: { x: 180, y: 180, z: 180 },
   quality: isMobile ? 0.82 : 1.0,
   fpsEstimate: 60,
@@ -106,7 +106,7 @@ const ui = new UIController({
   },
   onObjectToggle: (enabled) => { state.objectEnabled = Boolean(enabled); },
   onObjectSizeChange: (sizeNorm) => {
-    state.objectSize = Math.max(0.4, Math.min(1.8, Number(sizeNorm) || 1));
+    state.objectSize = Math.max(0.02, Math.min(0.6, Number(sizeNorm) || 0.3));
     renderer.setObjectScale(state.objectSize);
   },
   onObjectRotXChange: (deg) => {
@@ -130,6 +130,7 @@ const ui = new UIController({
     renderer.setCloneOptions(state.cloneCount, state.cloneFreeFly);
   },
   onPlayPause: (play) => { play ? audio.play() : audio.pause(); },
+  onVolumeChange: (v) => { audio.setVolume(v); },
   onSpeedChange: (v) => { state.speed = v; },
   onSensitivityChange: (v) => {
     state.sensitivity = v;

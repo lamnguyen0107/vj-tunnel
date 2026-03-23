@@ -12,6 +12,7 @@ export class AudioAnalyzer {
   constructor() {
     this.context = null;
     this.analyser = null;
+    this.gainNode = null;
     this.source = null;
     this.buffer = null;
     this.dataArray = null;
@@ -37,16 +38,29 @@ export class AudioAnalyzer {
       this.context = new (window.AudioContext || window.webkitAudioContext)();
       this.analyser = this.context.createAnalyser();
       this.analyser.fftSize = 512;
-      this.analyser.smoothingTimeConstant = 0.82;
+      this.analyser.smoothingTimeConstant = 0.52;
       this.bufferLength = this.analyser.frequencyBinCount;
       this.dataArray = new Uint8Array(this.bufferLength);
-      this.analyser.connect(this.context.destination);
+      
+      this.gainNode = this.context.createGain();
+      this.gainNode.gain.setValueAtTime(1.0, this.context.currentTime);
+      
+      // source -> analyser -> gainNode -> destination
+      this.analyser.connect(this.gainNode);
+      this.gainNode.connect(this.context.destination);
+    }
+  }
+
+  setVolume(normalizedValue) {
+    if (this.gainNode) {
+      this.gainNode.gain.setTargetAtTime(normalizedValue, this.context.currentTime, 0.015);
     }
   }
 
   /** Load audio file. */
   async loadFile(file) {
     this._ensureContext();
+    if (this.context.state === 'suspended') this.context.resume().catch(() => {});
     this.stop();
     const arrayBuffer = await file.arrayBuffer();
     this.buffer = await this.context.decodeAudioData(arrayBuffer);
@@ -54,10 +68,10 @@ export class AudioAnalyzer {
   }
 
   /** Start or resume playback. */
-  play() {
-    if (!this.buffer || this.isPlaying) return;
+  async play() {
     this._ensureContext();
-    if (this.context.state === 'suspended') this.context.resume();
+    if (!this.buffer || this.isPlaying) return;
+    if (this.context.state === 'suspended') await this.context.resume();
 
     this.source = this.context.createBufferSource();
     this.source.buffer = this.buffer;
@@ -123,7 +137,7 @@ export class AudioAnalyzer {
   }
 
   _ease(prev, target) {
-    const speed = target > prev ? 0.5 : 0.08;
+    const speed = target > prev ? 0.65 : 0.18; // Increased speed for punchier response
     return prev + (target - prev) * speed;
   }
 

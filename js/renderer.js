@@ -1,4 +1,4 @@
-﻿/* ======================================================
+/* ======================================================
    renderer.js — Tunnel + interactive floating 3D object
    ====================================================== */
 
@@ -239,7 +239,7 @@ export class TunnelRenderer {
   }
 
   setObjectScale(scale) {
-    this.objectScale = Math.max(0.4, Math.min(1.8, Number(scale) || 1));
+    this.objectScale = Math.max(0.02, Math.min(0.6, Number(scale) || 0.3));
   }
 
   setObjectRotation(xDeg, yDeg, zDeg) {
@@ -370,13 +370,16 @@ export class TunnelRenderer {
     this._lastPhysicsTime = now;
     this.hoverMix = 0.0;
 
-    const bassPulse = bass > 0.68 ? (bass - 0.68) * 1.4 : 0.0;
-    const baseScale = 0.94 + bassPulse * 0.16;
+    const bassPulse = bass > 0.1 ? (bass - 0.1) * 0.15 : 0.0;
+    // Base pulsates subtly + minor bass sync
+    const flicker = Math.sin(time * 15.0) * 0.015;
+    const baseScale = 1.0 + flicker + bassPulse; 
     const finalScale = this._objectBaseScale * this.objectScale * baseScale;
     this.objectRoot.scale.setScalar(finalScale);
-    // Floating around tunnel center in idle state
-    this.objectTargetPos.x = Math.sin(time * 0.55) * (0.11 + mid * 0.04);
-    this.objectTargetPos.y = Math.cos(time * 0.78) * (0.08 + high * 0.03);
+    
+    // Increased floating range and speed ("scroll more")
+    this.objectTargetPos.x = Math.sin(time * 0.65) * (0.35 + mid * 0.15);
+    this.objectTargetPos.y = Math.cos(time * 0.92) * (0.28 + high * 0.12);
 
     const spring = 0.78;
     const damping = 0.95;
@@ -385,9 +388,9 @@ export class TunnelRenderer {
     this.objectVelocity.x = (this.objectVelocity.x + ax * dt * 60.0) * damping;
     this.objectVelocity.y = (this.objectVelocity.y + ay * dt * 60.0) * damping;
 
-    // Bass-only directional kicks from center to multiple directions.
+    // Bass-only directional kicks
     if (bass > 0.74 && (now - this._lastBassKickTime) > 150) {
-      const kick = (bass - 0.74) * 2.8;
+      const kick = (bass - 0.74) * 1.5; // Slightly increased for visibility
       const dirAngle = time * 4.4 + Math.sin(time * 1.7) * 1.2;
       const dirX = Math.cos(dirAngle);
       const dirY = Math.sin(dirAngle);
@@ -403,9 +406,20 @@ export class TunnelRenderer {
     this._applyBoundaryBounce();
 
     if (this._isCustomModel) {
-      this.objectGroup.position.lerp(this._origin, 0.1);
+      // Reduced centering force to allow more "scrolling/drifting"
+      this.objectGroup.position.lerp(this._origin, 0.035); 
       const ringSpin = time * 0.16;
-      const radiusPulse = 1.0 + bassPulse * 0.22;
+      const radiusPulse = 1.0 + bassPulse * 0.15; // Slightly reduced
+      
+      // Auto-rotation over time like a globe (faster now)
+      const globeTime = time * 1.1; // Increased rotation speed
+      this._tmpEuler.set(
+        THREE.MathUtils.degToRad(this.objectRotationDeg.x) + globeTime * 0.45,
+        THREE.MathUtils.degToRad(this.objectRotationDeg.y) + globeTime * 0.9,
+        THREE.MathUtils.degToRad(this.objectRotationDeg.z) + globeTime * 0.15
+      );
+      this._tmpTargetQuat.setFromEuler(this._tmpEuler).multiply(this._baseModelQuaternion);
+
       for (let i = 0; i < this.objectNodes.length; i++) {
         const node = this.objectNodes[i];
         const m = this.objectNodeMeta[i];
@@ -424,7 +438,7 @@ export class TunnelRenderer {
           node.position.y = Math.sin(a) * m.radius * m.yScale * radiusPulse;
         }
         node.position.z = 0.0;
-        node.quaternion.copy(this._lockedViewQuat);
+        node.quaternion.copy(this._tmpTargetQuat); // Use rotating quat instead of locked
         node.scale.setScalar(finalScale);
       }
       this.objectAngularVelocity.multiplyScalar(0.75);

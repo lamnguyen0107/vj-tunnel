@@ -1,4 +1,4 @@
-﻿/* ======================================================
+/* ======================================================
    ui.js â€” Control panel bindings
    ====================================================== */
 
@@ -9,107 +9,110 @@ export class UIController {
     this._currentLanguage = 'vi';
 
     this.els = {
-      upload:              document.getElementById('audio-upload'),
-      uploadText:          document.getElementById('upload-text'),
-      modelUpload:         document.getElementById('model-upload'),
-      modelUploadText:     document.getElementById('model-upload-text'),
-      objectToggle:        document.getElementById('object-toggle'),
-      cloneCountLabel:     document.getElementById('label-clone-count'),
-      cloneCountSlider:    document.getElementById('clone-count-slider'),
-      cloneCountValue:     document.getElementById('clone-count-value'),
-      objectRotXLabel:     document.getElementById('label-object-rot-x'),
-      objectRotXSlider:    document.getElementById('object-rot-x-slider'),
-      objectRotXValue:     document.getElementById('object-rot-x-value'),
-      objectRotYLabel:     document.getElementById('label-object-rot-y'),
-      objectRotYSlider:    document.getElementById('object-rot-y-slider'),
-      objectRotYValue:     document.getElementById('object-rot-y-value'),
-      objectRotZLabel:     document.getElementById('label-object-rot-z'),
-      objectRotZSlider:    document.getElementById('object-rot-z-slider'),
-      objectRotZValue:     document.getElementById('object-rot-z-value'),
-      objectSizeLabel:     document.getElementById('label-object-size'),
-      objectSizeSlider:    document.getElementById('object-size-slider'),
-      objectSizeValue:     document.getElementById('object-size-value'),
-      cloneFreeFlyLabel:   document.getElementById('label-clone-freefly'),
-      cloneFreeFlyToggle:  document.getElementById('clone-freefly-toggle'),
-      welcomeCopy:         document.getElementById('welcome-copy'),
-      labelAudio:          document.getElementById('label-audio'),
-      labelControls:       document.getElementById('label-controls'),
-      labelObjectSub:      document.getElementById('label-object-sub'),
-      labelSpeed:          document.getElementById('label-speed'),
-      labelSensitivity:    document.getElementById('label-sensitivity'),
-      labelKaleidoscope:   document.getElementById('label-kaleidoscope'),
-      labelWave:           document.getElementById('label-wave'),
-      labelTwist:          document.getElementById('label-twist'),
-      labelParticle:       document.getElementById('label-particle'),
-      labelObjectBoost:    document.getElementById('label-object-boost'),
-      labelChaos:          document.getElementById('label-chaos'),
-      labelParticleShape:  document.getElementById('label-particle-shape'),
+      upload: document.getElementById('audio-upload'),
+      uploadText: document.getElementById('upload-text'),
+      modelUpload: document.getElementById('model-upload'),
+      modelUploadText: document.getElementById('model-upload-text'),
+      objectToggle: document.getElementById('object-toggle'),
+      cloneCountLabel: document.getElementById('label-clone-count'),
+      cloneCountSlider: document.getElementById('clone-count-slider'),
+      cloneCountValue: document.getElementById('clone-count-value'),
+      objectRotXLabel: document.getElementById('label-object-rot-x'),
+      objectRotXSlider: document.getElementById('object-rot-x-slider'),
+      objectRotXValue: document.getElementById('object-rot-x-value'),
+      objectRotYLabel: document.getElementById('label-object-rot-y'),
+      objectRotYSlider: document.getElementById('object-rot-y-slider'),
+      objectRotYValue: document.getElementById('object-rot-y-value'),
+      objectRotZLabel: document.getElementById('label-object-rot-z'),
+      objectRotZSlider: document.getElementById('object-rot-z-slider'),
+      objectRotZValue: document.getElementById('object-rot-z-value'),
+      objectSizeLabel: document.getElementById('label-object-size'),
+      objectSizeSlider: document.getElementById('object-size-slider'),
+      objectSizeValue: document.getElementById('object-size-value'),
+      cloneFreeFlyLabel: document.getElementById('label-clone-freefly'),
+      cloneFreeFlyToggle: document.getElementById('clone-freefly-toggle'),
+      welcomeCopy: document.getElementById('welcome-copy'),
+      labelAudio: document.getElementById('label-audio'),
+      labelControls: document.getElementById('label-controls'),
+      labelObjectSub: document.getElementById('label-object-sub'),
+      labelSpeed: document.getElementById('label-speed'),
+      labelSensitivity: document.getElementById('label-sensitivity'),
+      labelKaleidoscope: document.getElementById('label-kaleidoscope'),
+      labelWave: document.getElementById('label-wave'),
+      labelTwist: document.getElementById('label-twist'),
+      labelParticle: document.getElementById('label-particle'),
+      labelObjectBoost: document.getElementById('label-object-boost'),
+      labelChaos: document.getElementById('label-chaos'),
+      labelParticleShape: document.getElementById('label-particle-shape'),
       labelObjectDistance: document.getElementById('label-object-distance'),
-      labelAutomix:        document.getElementById('label-automix'),
-      labelObjectEnabled:  document.getElementById('label-object-enabled'),
-      labelColor:          document.getElementById('label-color'),
+      labelAutomix: document.getElementById('label-automix'),
+      labelObjectEnabled: document.getElementById('label-object-enabled'),
+      labelColor: document.getElementById('label-color'),
       labelTunnelColorSub: document.getElementById('label-tunnel-color-sub'),
       labelObjectColorSub: document.getElementById('label-object-color-sub'),
-      labelColorMode:      document.getElementById('label-color-mode'),
-      labelPrimaryColor:   document.getElementById('label-primary-color'),
+      labelColorMode: document.getElementById('label-color-mode'),
+      labelPrimaryColor: document.getElementById('label-primary-color'),
       labelSecondaryColor: document.getElementById('label-secondary-color'),
-      labelBgColor:        document.getElementById('label-bg-color'),
+      labelBgColor: document.getElementById('label-bg-color'),
       labelObjectColorMode: document.getElementById('label-object-color-mode'),
-      labelObjectColor:    document.getElementById('label-object-color'),
-      labelTheme:          document.getElementById('label-theme'),
-      labelLiveSet:        document.getElementById('label-live-set'),
-      randomizeText:       document.getElementById('randomize-text'),
-      langToggle:          document.getElementById('lang-toggle'),
-      playBtn:             document.getElementById('play-pause-btn'),
-      playIcon:            document.getElementById('play-icon'),
-      pauseIcon:           document.getElementById('pause-icon'),
-      speedSlider:         document.getElementById('speed-slider'),
-      speedValue:          document.getElementById('speed-value'),
-      sensitivitySlider:   document.getElementById('sensitivity-slider'),
-      sensitivityValue:    document.getElementById('sensitivity-value'),
-      kaleidoscopeSlider:  document.getElementById('kaleidoscope-slider'),
-      kaleidoscopeValue:   document.getElementById('kaleidoscope-value'),
-      waveSlider:          document.getElementById('wave-slider'),
-      waveValue:           document.getElementById('wave-value'),
-      twistSlider:         document.getElementById('twist-slider'),
-      twistValue:          document.getElementById('twist-value'),
-      particleSlider:      document.getElementById('particle-slider'),
-      particleValue:       document.getElementById('particle-value'),
-      objectBoostSlider:   document.getElementById('object-boost-slider'),
-      objectBoostValue:    document.getElementById('object-boost-value'),
-      chaosSlider:         document.getElementById('chaos-slider'),
-      chaosValue:          document.getElementById('chaos-value'),
+      labelObjectColor: document.getElementById('label-object-color'),
+      labelTheme: document.getElementById('label-theme'),
+      labelLiveSet: document.getElementById('label-live-set'),
+      randomizeText: document.getElementById('randomize-text'),
+      langToggle: document.getElementById('lang-toggle'),
+      labelVolume: document.getElementById('label-volume'),
+      playBtn: document.getElementById('play-pause-btn'),
+      playIcon: document.getElementById('play-icon'),
+      pauseIcon: document.getElementById('pause-icon'),
+      volumeSlider: document.getElementById('volume-slider'),
+      volumeValue: document.getElementById('volume-value'),
+      speedSlider: document.getElementById('speed-slider'),
+      speedValue: document.getElementById('speed-value'),
+      sensitivitySlider: document.getElementById('sensitivity-slider'),
+      sensitivityValue: document.getElementById('sensitivity-value'),
+      kaleidoscopeSlider: document.getElementById('kaleidoscope-slider'),
+      kaleidoscopeValue: document.getElementById('kaleidoscope-value'),
+      waveSlider: document.getElementById('wave-slider'),
+      waveValue: document.getElementById('wave-value'),
+      twistSlider: document.getElementById('twist-slider'),
+      twistValue: document.getElementById('twist-value'),
+      particleSlider: document.getElementById('particle-slider'),
+      particleValue: document.getElementById('particle-value'),
+      objectBoostSlider: document.getElementById('object-boost-slider'),
+      objectBoostValue: document.getElementById('object-boost-value'),
+      chaosSlider: document.getElementById('chaos-slider'),
+      chaosValue: document.getElementById('chaos-value'),
       particleShapeSelect: document.getElementById('particle-shape-select'),
       objectDistanceSelect: document.getElementById('object-distance-select'),
-      automixToggle:       document.getElementById('automix-toggle'),
+      automixToggle: document.getElementById('automix-toggle'),
       objectEnabledToggle: document.getElementById('object-enabled-toggle'),
-      colorModeSelect:     document.getElementById('color-mode-select'),
+      colorModeSelect: document.getElementById('color-mode-select'),
       objectColorModeSelect: document.getElementById('object-color-mode-select'),
-      primaryColor:        document.getElementById('primary-color'),
-      secondaryColor:      document.getElementById('secondary-color'),
-      bgColor:             document.getElementById('bg-color'),
-      objectColor:         document.getElementById('object-color'),
-      themeSelector:       document.getElementById('theme-selector'),
-      presetDrop:          document.getElementById('preset-drop'),
-      presetBreakdown:     document.getElementById('preset-breakdown'),
-      presetBuildUp:       document.getElementById('preset-build-up'),
-      randomizeBtn:        document.getElementById('randomize-btn'),
-      togglePanel:         document.getElementById('toggle-panel'),
-      panel:               document.getElementById('ui-panel'),
-      fpsCounter:          document.getElementById('fps-counter'),
-      visualizerCanvas:    document.getElementById('visualizer-canvas'),
-      themeNeonCyberpunk:  document.getElementById('theme-neonCyberpunk'),
+      primaryColor: document.getElementById('primary-color'),
+      secondaryColor: document.getElementById('secondary-color'),
+      bgColor: document.getElementById('bg-color'),
+      objectColor: document.getElementById('object-color'),
+      themeSelector: document.getElementById('theme-selector'),
+      presetDrop: document.getElementById('preset-drop'),
+      presetBreakdown: document.getElementById('preset-breakdown'),
+      presetBuildUp: document.getElementById('preset-build-up'),
+      randomizeBtn: document.getElementById('randomize-btn'),
+      togglePanel: document.getElementById('toggle-panel'),
+      panel: document.getElementById('ui-panel'),
+      fpsCounter: document.getElementById('fps-counter'),
+      visualizerCanvas: document.getElementById('visualizer-canvas'),
+      themeNeonCyberpunk: document.getElementById('theme-neonCyberpunk'),
       themePsychedelicRainbow: document.getElementById('theme-psychedelicRainbow'),
       themeDarkIndustrial: document.getElementById('theme-darkIndustrial'),
-      themeGalaxyWarp:     document.getElementById('theme-galaxyWarp'),
-      shapeMix:            document.getElementById('shape-mix'),
-      shapeSphere:         document.getElementById('shape-sphere'),
-      shapeBox:            document.getElementById('shape-box'),
-      shapeCylinder:       document.getElementById('shape-cylinder'),
-      shapeTorus:          document.getElementById('shape-torus'),
-      distanceNear:        document.getElementById('distance-near'),
-      distanceMid:         document.getElementById('distance-mid'),
-      distanceFar:         document.getElementById('distance-far'),
+      themeGalaxyWarp: document.getElementById('theme-galaxyWarp'),
+      shapeMix: document.getElementById('shape-mix'),
+      shapeSphere: document.getElementById('shape-sphere'),
+      shapeBox: document.getElementById('shape-box'),
+      shapeCylinder: document.getElementById('shape-cylinder'),
+      shapeTorus: document.getElementById('shape-torus'),
+      distanceNear: document.getElementById('distance-near'),
+      distanceMid: document.getElementById('distance-mid'),
+      distanceFar: document.getElementById('distance-far'),
       objectColorModeAuto: document.getElementById('object-color-mode-auto'),
       objectColorModeCustom: document.getElementById('object-color-mode-custom'),
     };
@@ -142,6 +145,7 @@ export class UIController {
         objectRotZ: 'Góc Z',
         cloneFreeFly: 'Clone bay tự do',
         randomize: 'Trộn ngẫu nhiên',
+        volume: 'Âm lượng',
         speed: 'Tốc độ',
         sensitivity: 'Độ nhạy',
         kaleidoscope: 'Kaleidoscope',
@@ -213,6 +217,7 @@ export class UIController {
         objectRotZ: 'Angle Z',
         cloneFreeFly: 'Free-Fly Clones',
         randomize: 'Randomize',
+        volume: 'Volume',
         speed: 'Speed',
         sensitivity: 'Sensitivity',
         kaleidoscope: 'Kaleidoscope',
@@ -273,10 +278,17 @@ export class UIController {
     this.els.upload.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      this.els.uploadText.textContent = file.name.length > 18
+
+      const label = this.els.uploadText;
+      label.textContent = 'Decoding...';
+      this.els.playBtn.disabled = true;
+      this.resetPlaybackUI();
+      
+      await this.callbacks.onFileLoad(file);
+      
+      label.textContent = file.name.length > 18
         ? file.name.slice(0, 16) + '...' : file.name;
       this.els.playBtn.disabled = false;
-      await this.callbacks.onFileLoad(file);
     });
 
     this.els.modelUpload.addEventListener('change', async (e) => {
@@ -301,6 +313,7 @@ export class UIController {
       this.els.pauseIcon.style.display = this._isPlaying ? 'block' : 'none';
       this.callbacks.onPlayPause(this._isPlaying);
     });
+    this._bindSlider('volumeSlider', 'volumeValue', v => this.callbacks.onVolumeChange(v / 100));
 
     // Sliders
     this._bindSlider('speedSlider', 'speedValue', v => this.callbacks.onSpeedChange(v / 100));
@@ -350,6 +363,12 @@ export class UIController {
     });
   }
 
+  resetPlaybackUI() {
+    this._isPlaying = false;
+    this.els.playIcon.style.display = 'block';
+    this.els.pauseIcon.style.display = 'none';
+  }
+
   _bindSlider(sliderId, valueId, callback) {
     const slider = this.els[sliderId];
     const valueEl = this.els[valueId];
@@ -373,7 +392,7 @@ export class UIController {
   }
 
   setObjectSize(scaleNorm) {
-    const v = Math.max(40, Math.min(180, Math.round((Number(scaleNorm) || 1) * 100)));
+    const v = Math.max(2, Math.min(60, Math.round((Number(scaleNorm) || 0.3) * 100)));
     this.els.objectSizeSlider.value = String(v);
     this.els.objectSizeValue.textContent = String(v);
   }
@@ -478,6 +497,7 @@ export class UIController {
     this.els.labelColorMode.textContent = t.colorMode;
     this.els.labelTheme.textContent = t.sectionTheme;
     this.els.labelLiveSet.textContent = t.sectionLiveSet;
+    this.els.labelVolume.textContent = t.volume;
     this.els.labelSpeed.textContent = t.speed;
     this.els.labelSensitivity.textContent = t.sensitivity;
     this.els.labelKaleidoscope.textContent = t.kaleidoscope;
