@@ -33,7 +33,7 @@ const state = {
   cloneFreeFly: false,
   objectGap: 0.28,
   objectSize: 0.30,
-  objectRotation: { x: 180, y: 180, z: 180 },
+  objectRotation: { x: 0, y: 0, z: 0 },
   quality: isMobile ? 0.82 : 1.0,
   fpsEstimate: 60,
   colorMode: 'theme', // Default to theme mode for color sync

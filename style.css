@@ -472,6 +472,12 @@ body {
   cursor: pointer;
 }
 
+.rotation-section {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--bg-panel-border);
+}
+
 .inline-select-row {
   display: flex;
   align-items: center;
