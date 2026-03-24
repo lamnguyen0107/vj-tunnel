@@ -197,7 +197,7 @@ export const fragmentShader = /* glsl */ `
     baseUv *= (1.0 - bassN * 0.12);
 
     vec2 uv = baseUv;
-    float kSegments = mix(1.0, 12.0, uKaleidoscope) + bassN * 5.0;
+    float kSegments = mix(1.0, 12.0, uKaleidoscope) + bassN * 2.5; // Reduced from 5.0 for stability
     if (uKaleidoscope > 0.01) {
       vec2 k1 = kaleidoscope(uv, kSegments, uKaleidoscopeMode, uKaleidoscopeAngle * TAU);
       if (uKaleidoscopeFade < 1.0) {
@@ -314,7 +314,7 @@ export const fragmentShader = /* glsl */ `
 
     float centerLight = smoothstep(0.15, 0.0, radius);
     centerLight *= (0.76 + bassN * 0.7);
-    vec3 centerColor = mix(tunnelColor, vec3(1.0), 0.58);
+    vec3 centerColor = mix(tunnelColor, vec3(1.0), 0.28); // Less white center (0.58 -> 0.28)
     color += centerColor * centerLight * 0.72;
 
     color = mix(color, uBgColor, smoothstep(0.52, 2.0, radius) * 0.54);
@@ -326,11 +326,11 @@ export const fragmentShader = /* glsl */ `
 
     color = clamp(color, 0.0, 1.35);
     
-    // Apply Glow Intensity
-    color *= (1.0 + uGlowIntensity * clamp(brightness, 0.0, 1.0));
+    // Apply Glow Intensity - softened to prevent pure whiteout
+    color *= (1.0 + uGlowIntensity * 0.45 * clamp(brightness, 0.0, 1.0));
     
-    // Beat Kick - Kaleidoscope Flash
-    color += uKaleidoscopeFlash * 0.55 * vec3(1.0, 1.0, 1.0);
+    // Beat Kick - Kaleidoscope Flash (Using theme color instead of white for less 'chói')
+    color += uKaleidoscopeFlash * 0.4 * tunnelColor;
     
     gl_FragColor = vec4(color, 1.0);
   }

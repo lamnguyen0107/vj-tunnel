@@ -377,11 +377,11 @@ function animate() {
 
   const reactiveWave = clamp01(
     (state.current.waveIntensity ?? 0.6) *
-    (0.78 + bassN * 0.42 + midN * 0.36)
+    (0.85 + bassN * 0.25 + midN * 0.22) // Reduced multipliers from 0.42/0.36
   );
   const reactiveTwist = clamp01(
     (state.current.twistAmount ?? 0.7) *
-    (0.72 + bassN * 0.56 + midN * 0.34)
+    (0.8 + bassN * 0.35 + midN * 0.25) // Reduced multipliers from 0.56/0.34
   );
   const reactiveChaos = clamp01(
     (state.current.chaosAmount ?? 0.55) *
@@ -395,7 +395,7 @@ function animate() {
   const isMusicReactive = Boolean(audio.buffer);
   const jump = Math.pow(clamp01(audio.bass), 1.55);
   const autoSpeed = isMusicReactive
-    ? clamp01(state.speed * (0.82 + jump * 0.95) + jump * 0.14)
+    ? clamp01(state.speed * (0.88 + jump * 0.45) + jump * 0.08) // Reduced 'jump' impact
     : state.speed;
   const autoKaleidoscope = isMusicReactive
     ? clamp01(state.kaleidoscope * (0.86 + midN * 0.55) + highN * 0.22)

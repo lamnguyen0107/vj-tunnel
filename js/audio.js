@@ -137,7 +137,8 @@ export class AudioAnalyzer {
   }
 
   _ease(prev, target) {
-    const speed = target > prev ? 0.65 : 0.18; // Increased speed for punchier response
+    // Slower attack (0.65 -> 0.45) and release (0.18 -> 0.12) for smoother tunnel motion
+    const speed = target > prev ? 0.45 : 0.12; 
     return prev + (target - prev) * speed;
   }
 

@@ -70,8 +70,12 @@ export class UIController {
       fpsCounter: document.getElementById('fps-counter'),
       themeNeonCyberpunk: document.getElementById('theme-neonCyberpunk'),
       themePsychedelicRainbow: document.getElementById('theme-psychedelicRainbow'),
-      themeDarkIndustrial: document.getElementById('theme-darkIndustrial'),
-      themeGalaxyWarp: document.getElementById('theme-galaxyWarp'),
+      themeLavaCore: document.getElementById('theme-lavaCore'),
+      themeDeepOcean: document.getElementById('theme-deepOcean'),
+      themeGoldenEmerald: document.getElementById('theme-goldenEmerald'),
+      themeAcidTechno: document.getElementById('theme-acidTechno'),
+      themeSunsetHorizon: document.getElementById('theme-sunsetHorizon'),
+      themeVintageVapor: document.getElementById('theme-vintageVapor'),
     };
 
     this._fpsFrames = 0;
@@ -135,8 +139,12 @@ export class UIController {
         theme: {
           neonCyberpunk: 'Neon Cyberpunk',
           psychedelicRainbow: 'Cầu vồng Psychedelic',
-          darkIndustrial: 'Công nghiệp bóng tối',
-          galaxyWarp: 'Xuyên ngân hà',
+          lavaCore: 'Lửa địa ngục (Lava Core)',
+          deepOcean: 'Đại dương sâu (Deep Ocean)',
+          goldenEmerald: 'Xanh lục bảo vàng (Golden Emerald)',
+          acidTechno: 'Công nghệ ảo (Acid Techno)',
+          sunsetHorizon: 'Chân trời hoàng hôn',
+          vintageVapor: 'Hoài niệm Vapor',
         },
         preset: {
           drop: 'Drop',
@@ -213,8 +221,12 @@ export class UIController {
         theme: {
           neonCyberpunk: 'Neon Cyberpunk',
           psychedelicRainbow: 'Psychedelic Rainbow',
-          darkIndustrial: 'Dark Industrial',
-          galaxyWarp: 'Galaxy Warp',
+          lavaCore: 'Lava Core',
+          deepOcean: 'Deep Ocean',
+          goldenEmerald: 'Golden Emerald',
+          acidTechno: 'Acid Techno',
+          sunsetHorizon: 'Sunset Horizon',
+          vintageVapor: 'Vintage Vapor',
         },
         preset: {
           drop: 'Drop',
@@ -502,8 +514,12 @@ export class UIController {
 
     this.els.themeNeonCyberpunk.textContent = t.theme.neonCyberpunk;
     this.els.themePsychedelicRainbow.textContent = t.theme.psychedelicRainbow;
-    this.els.themeDarkIndustrial.textContent = t.theme.darkIndustrial;
-    this.els.themeGalaxyWarp.textContent = t.theme.galaxyWarp;
+    this.els.themeLavaCore.textContent = t.theme.lavaCore;
+    this.els.themeDeepOcean.textContent = t.theme.deepOcean;
+    this.els.themeGoldenEmerald.textContent = t.theme.goldenEmerald;
+    this.els.themeAcidTechno.textContent = t.theme.acidTechno;
+    this.els.themeSunsetHorizon.textContent = t.theme.sunsetHorizon;
+    this.els.themeVintageVapor.textContent = t.theme.vintageVapor;
   }
 
   setTunnelControls(values) {
