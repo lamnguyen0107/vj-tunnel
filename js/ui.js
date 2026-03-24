@@ -107,7 +107,7 @@ export class UIController {
         upload: 'Thêm nhạc',
         uploadModel: 'Thêm 3D (.glb)',
         cloneCount: 'Số object',
-        objectSize: 'Size object',
+        objectSize: 'Kích cỡ',
         objectRotX: 'Góc X',
         objectRotY: 'Góc Y',
         objectRotZ: 'Góc Z',
@@ -408,7 +408,7 @@ export class UIController {
   }
 
   setObjectSize(scaleNorm) {
-    const v = Math.max(2, Math.min(60, Math.round((Number(scaleNorm) || 0.3) * 100)));
+    const v = Math.max(20, Math.min(100, Math.round((Number(scaleNorm) || 0.3) * 100)));
     this.els.objectSizeSlider.value = String(v);
     this.els.objectSizeValue.textContent = String(v);
   }
