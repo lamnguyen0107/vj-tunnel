@@ -21,15 +21,18 @@ const state = {
   sensitivity: 1.0,
   kaleidoscope: 0.5,
   kaleidoscopeMode: 0,
+  kaleidoscopeModePrevious: 0,
+  kaleidoscopeSwitchTime: 0,
+  cooldownMs: 650,
   kaleidoscopeAutoMode: true,
   kaleidoscopeAngle: 0,
   kaleidoscopeFlash: 0,
-  colorMode: 'theme',
   livePreset: 'drop',
   objectEnabled: true,
   cloneCount: 5,
   cloneFreeFly: false,
-  objectSize: 0.35,
+  objectGap: 0.28,
+  objectSize: 0.30,
   objectRotation: { x: 180, y: 180, z: 180 },
   quality: isMobile ? 0.82 : 1.0,
   fpsEstimate: 60,
@@ -108,7 +111,10 @@ const ui = new UIController({
     await renderer.loadObjectFile(file);
     renderer.setCloneOptions(state.cloneCount, state.cloneFreeFly);
   },
-  onObjectToggle: (enabled) => { state.objectEnabled = Boolean(enabled); },
+  onObjectToggle: (enabled) => { 
+    state.objectEnabled = Boolean(enabled); 
+    console.log('Main current objectEnabled state:', state.objectEnabled);
+  },
   onObjectSizeChange: (sizeNorm) => {
     state.objectSize = Math.max(0.02, Math.min(0.6, Number(sizeNorm) || 0.3));
     renderer.setObjectScale(state.objectSize);
@@ -140,8 +146,20 @@ const ui = new UIController({
     state.sensitivity = v;
     audio.setSensitivity(v);
   },
+  onObjectGapChange: (v) => { 
+    state.objectGap = v; 
+    renderer.setObjectGap(v);
+  },
   onKaleidoscopeChange: (v) => { state.kaleidoscope = v; },
-  onKaleidoscopeModeChange: (m) => { state.kaleidoscopeMode = m; },
+  onCooldownChange: (v) => { state.cooldownMs = v; },
+  onKaleidoscopeModeChange: (m) => { 
+    if (state.kaleidoscopeMode !== m) {
+      state.kaleidoscopeModePrevious = state.kaleidoscopeMode;
+      state.kaleidoscopeSwitchTime = state.time;
+      state.kaleidoscopeMode = m; 
+      state.lastMixTime = state.time;
+    }
+  },
   onKaleidoscopeAutoModeChange: (b) => { state.kaleidoscopeAutoMode = b; },
   onWaveChange: (v) => {
     state.current.waveIntensity = v;
@@ -161,7 +179,7 @@ const ui = new UIController({
     state.target.chaosAmount = v;
   },
   onAutoMixChange: () => {},
-  onObjectEnabledChange: () => {},
+  onObjectEnabledChange: (enabled) => { state.objectEnabled = Boolean(enabled); },
   onParticleShapeChange: () => {},
   onObjectDistanceChange: () => {},
   onPrimaryColorChange: (hex) => {
@@ -212,9 +230,10 @@ ui.setLivePreset(state.livePreset);
 ui.setColorMode(state.colorMode);
 ui.setObjectToggle(state.objectEnabled);
 ui.setObjectSize(state.objectSize);
-ui.setObjectRotation(state.objectRotation);
 ui.setCloneCount(state.cloneCount);
 ui.setCloneFreeFly(state.cloneFreeFly);
+ui.setObjectGap(state.objectGap);
+renderer.setObjectGap(state.objectGap);
 ui.setPrimaryColor(rgbArrayToHex(state.customColors.color1));
 ui.setSecondaryColor(rgbArrayToHex(state.customColors.color2));
 ui.setBackgroundColor(rgbArrayToHex(state.customColors.bgColor));
@@ -352,9 +371,9 @@ function animate() {
     };
 
   // Audio-synced modulation layer: sliders remain base values.
-  const bassN = Math.pow(clamp01(audio.bass), 1.35);
-  const midN = Math.pow(clamp01(audio.mid), 1.2);
-  const highN = Math.pow(clamp01(audio.high), 1.1);
+  const bassN = Math.pow(clamp01(audio.bass), 1.55);
+  const midN = Math.pow(clamp01(audio.mid), 1.3);
+  const highN = Math.pow(clamp01(audio.high), 1.25);
 
   const reactiveWave = clamp01(
     (state.current.waveIntensity ?? 0.6) *
@@ -366,11 +385,15 @@ function animate() {
   );
   const reactiveChaos = clamp01(
     (state.current.chaosAmount ?? 0.55) *
-    (0.65 + midN * 0.62 + highN * 0.42)
+    (0.65 + midN * 0.8 + highN * 0.42)
+  );
+  const reactiveDistortion = clamp01(
+    (state.current.distortion ?? 0.8) *
+    (1.0 + midN * 0.5 + highN * 0.4)
   );
 
   const isMusicReactive = Boolean(audio.buffer);
-  const jump = Math.pow(clamp01(audio.bass), 1.5);
+  const jump = Math.pow(clamp01(audio.bass), 1.55);
   const autoSpeed = isMusicReactive
     ? clamp01(state.speed * (0.82 + jump * 0.95) + jump * 0.14)
     : state.speed;
@@ -386,23 +409,19 @@ function animate() {
     if (!state.lastMixTime) state.lastMixTime = state.time;
     
     // Logic: If there is a noticeable jump (beat)
-    // Map the relative energy of Highs/Mids to a target mode index.
-    // Higher pitch energy -> Higher mode indices.
-    const timeSinceLast = state.time - state.lastMixTime;
-    const isBeat = jump > 0.55; 
+    const timeSinceLast = (state.time - state.lastMixTime) * 1000.0;
+    const isBeat = jump > 0.6; 
     
-    if (isBeat && timeSinceLast > 0.65) {
-       // Calculation: use high frequency energy to determine the "next focus"
-       // We'll map the ratio of high/mid to pick from a specific range of 10 modes.
-       // This makes it feel "pitched" rather than random.
-       const pitchFactor = (audio.high * 1.5 + audio.mid * 0.5) / (audio.bass + 0.1);
-       let targetMode = Math.floor(clamp01(pitchFactor * 0.5) * 10);
+    if (isBeat && timeSinceLast > state.cooldownMs) {
+       // Pick any of the 10 modes randomly to see all effects
+       let targetMode = Math.floor(Math.random() * 10);
        
-       // Ensure it actually changed
        if (targetMode === state.kaleidoscopeMode) {
          targetMode = (targetMode + 1) % 10;
        }
        
+       state.kaleidoscopeModePrevious = state.kaleidoscopeMode;
+       state.kaleidoscopeSwitchTime = state.time;
        state.kaleidoscopeMode = targetMode;
        state.lastMixTime = state.time;
        state.kaleidoscopeFlash = 0.8 + jump * 0.4; // Flash follows beat intensity
@@ -412,6 +431,9 @@ function animate() {
 
   // Decay the flash value over time
   state.kaleidoscopeFlash = Math.max(0, state.kaleidoscopeFlash - clock.delta * 2.5);
+
+  let kFade = (state.time - (state.kaleidoscopeSwitchTime || 0)) / 0.15; // 150ms crossfade
+  kFade = clamp01(kFade);
 
   if (isMusicReactive) {
     ui.setCoreControls({
@@ -433,9 +455,11 @@ function animate() {
     speed:           autoSpeed,
     kaleidoscope:    autoKaleidoscope,
     kaleidoscopeMode: state.kaleidoscopeMode,
+    kaleidoscopeModePrevious: state.kaleidoscopeModePrevious,
     kaleidoscopeAngle: state.kaleidoscopeAngle,
     kaleidoscopeFlash: state.kaleidoscopeFlash,
-    distortion:      state.current.distortion,
+    kaleidoscopeFade: kFade,
+    distortion:      reactiveDistortion,
     glowIntensity:   state.current.glowIntensity,
     colorShiftSpeed: state.current.colorShiftSpeed,
     fractalDepth:    state.current.fractalDepth,
@@ -450,7 +474,9 @@ function animate() {
   });
 
   // UI updates
-  ui.drawVisualizer(audio.getFrequencyData());
+  if (typeof ui.drawVisualizer === 'function' && ui.els && ui.els.visualizerCanvas) {
+    ui.drawVisualizer(audio.getFrequencyData());
+  }
   ui.updateFPS();
 }
 

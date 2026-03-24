@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tunnel VJ - Trình diễn âm thanh cực chill</title>
-  <meta name="description" content="Welcome! Hãy chơi bản nhạc bạn thích và tận hưởng hành trình Tunnel VJ đầy màu sắc." />
+  <meta name="description"
+    content="Welcome! Hãy chơi bản nhạc bạn thích và tận hưởng hành trình Tunnel VJ đầy màu sắc." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <canvas id="glcanvas"></canvas>
 
@@ -28,14 +32,9 @@
     </div>
 
     <div class="ui-panel-body">
-      <div class="ui-section welcome-section">
-        <p id="welcome-copy" class="welcome-copy">
-          Welcome! Hãy cho bản nhạc bạn thích vào đây và cùng tận hưởng một chuyến đi ánh sáng thật đã mắt, thật đã tai nhé.
-        </p>
-      </div>
-
+      <!-- AUDIO + OBJECT -->
       <div class="ui-section">
-        <div id="label-audio" class="section-label">ÂM THANH</div>
+        <div id="label-audio" class="section-label">ÂM THANH & OBJECT</div>
         <div class="audio-controls">
           <label for="audio-upload" class="upload-btn" id="upload-label">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -72,40 +71,28 @@
         </div>
         <div class="slider-group" style="margin-top:8px;">
           <label id="label-object-size" for="object-size-slider">Size object</label>
-          <input type="range" id="object-size-slider" min="2" max="60" value="35" />
-          <span class="slider-value" id="object-size-value">35</span>
+          <input type="range" id="object-size-slider" min="2" max="60" value="30" />
+          <span class="slider-value" id="object-size-value">30</span>
         </div>
         <div class="slider-group">
-          <label id="label-clone-count" for="clone-count-slider">Số clone</label>
+          <label id="label-clone-count" for="clone-count-slider">Số object</label>
           <input type="range" id="clone-count-slider" min="1" max="10" value="5" />
           <span class="slider-value" id="clone-count-value">5</span>
         </div>
         <div class="slider-group">
-          <label id="label-object-rot-x" for="object-rot-x-slider">Góc X</label>
-          <input type="range" id="object-rot-x-slider" min="-180" max="180" value="180" />
-          <span class="slider-value" id="object-rot-x-value">180</span>
-        </div>
-        <div class="slider-group">
-          <label id="label-object-rot-y" for="object-rot-y-slider">Góc Y</label>
-          <input type="range" id="object-rot-y-slider" min="-180" max="180" value="180" />
-          <span class="slider-value" id="object-rot-y-value">180</span>
-        </div>
-        <div class="slider-group">
-          <label id="label-object-rot-z" for="object-rot-z-slider">Góc Z</label>
-          <input type="range" id="object-rot-z-slider" min="-180" max="180" value="180" />
-          <span class="slider-value" id="object-rot-z-value">180</span>
+          <label id="label-object-gap" for="object-gap-slider">Khoảng cách</label>
+          <input type="range" id="object-gap-slider" min="2" max="100" value="28" />
+          <span class="slider-value" id="object-gap-value">28</span>
         </div>
         <div class="toggle-row">
-          <label id="label-clone-freefly" for="clone-freefly-toggle">Clone bay tự do</label>
+          <label id="label-clone-freefly" for="clone-freefly-toggle">Bay tự do</label>
           <input id="clone-freefly-toggle" type="checkbox" />
-        </div>
-        <div id="audio-visualizer" class="audio-visualizer">
-          <canvas id="visualizer-canvas" width="280" height="30"></canvas>
         </div>
       </div>
 
+      <!-- TUNNEL CONTROLS -->
       <div class="ui-section">
-        <div id="label-controls" class="section-label">ĐIỀU CHỈNH</div>
+        <div id="label-controls" class="section-label">ĐIỀU CHỈNH TUNNEL</div>
         <div class="slider-group">
           <label id="label-speed" for="speed-slider">Tốc độ</label>
           <input type="range" id="speed-slider" min="0" max="100" value="50" />
@@ -118,19 +105,13 @@
         </div>
         <div class="slider-group">
           <label id="label-kaleidoscope" for="kaleidoscope-slider">Kaleidoscope</label>
-          <input type="range" id="kaleidoscope-slider" min="0" max="100" value="50" />
+          <input type="range" id="kaleidoscope-slider" min="10" max="80" value="50" />
           <span class="slider-value" id="kaleidoscope-value">50</span>
         </div>
-        
         <div class="toggle-row kaleido-auto-row">
-          <label id="label-kaleidoscope-auto" for="kaleidoscope-auto-toggle">AUTO MIX KALEIDOSCOPE</label>
+          <label id="label-kaleidoscope-auto" for="kaleidoscope-auto-toggle">AUTO MIX</label>
           <input id="kaleidoscope-auto-toggle" type="checkbox" checked />
         </div>
-
-        <div class="k-label-row">
-          <span id="label-kaleidoscope-mode-name" class="k-mode-name">Radial</span>
-        </div>
-
         <div id="kaleido-grid" class="k-grid">
           <button class="k-item active" data-mode="0" title="Radial"><i class="fas fa-asterisk"></i></button>
           <button class="k-item" data-mode="1" title="Mirror"><i class="fas fa-th-large"></i></button>
@@ -153,86 +134,14 @@
           <input type="range" id="twist-slider" min="0" max="100" value="50" />
           <span class="slider-value" id="twist-value">50</span>
         </div>
-        <div id="label-object-sub" class="subsection-label object-only">Object Floating</div>
-        <div class="slider-group object-only">
-          <label id="label-particle" for="particle-slider">Hạt sáng</label>
-          <input type="range" id="particle-slider" min="0" max="100" value="65" />
-          <span class="slider-value" id="particle-value">65</span>
-        </div>
-        <div class="slider-group object-only">
-          <label id="label-object-boost" for="object-boost-slider">Object Boost</label>
-          <input type="range" id="object-boost-slider" min="0" max="100" value="78" />
-          <span class="slider-value" id="object-boost-value">78</span>
-        </div>
         <div class="slider-group">
           <label id="label-chaos" for="chaos-slider">Hỗn loạn</label>
           <input type="range" id="chaos-slider" min="0" max="100" value="50" />
           <span class="slider-value" id="chaos-value">50</span>
         </div>
-        <div class="inline-select-row object-only">
-          <label id="label-particle-shape" for="particle-shape-select">Shape hạt</label>
-          <select id="particle-shape-select" class="control-select compact-select">
-            <option value="mix" id="shape-mix">Mix</option>
-            <option value="sphere" id="shape-sphere">Sphere</option>
-            <option value="box" id="shape-box">Box</option>
-            <option value="cylinder" id="shape-cylinder">Cylinder</option>
-            <option value="torus" id="shape-torus">Torus</option>
-          </select>
-        </div>
-        <div class="inline-select-row object-only">
-          <label id="label-object-distance" for="object-distance-select">Khoảng cách</label>
-          <select id="object-distance-select" class="control-select compact-select">
-            <option value="near" id="distance-near">Near</option>
-            <option value="mid" id="distance-mid">Mid</option>
-            <option value="far" id="distance-far">Far</option>
-          </select>
-        </div>
-        <div class="toggle-row object-only">
-          <label id="label-automix" for="automix-toggle">Random mix</label>
-          <input id="automix-toggle" type="checkbox" checked />
-        </div>
-        <div class="toggle-row object-only">
-          <label id="label-object-enabled" for="object-enabled-toggle">Hiện object</label>
-          <input id="object-enabled-toggle" type="checkbox" />
-        </div>
       </div>
 
-      <div class="ui-section">
-        <div id="label-color" class="section-label">MÀU SẮC</div>
-        <div id="label-tunnel-color-sub" class="subsection-label">Tunnel Background</div>
-        <div class="color-mode-row">
-          <label id="label-color-mode" for="color-mode-select">Chế độ màu</label>
-          <select id="color-mode-select" class="control-select">
-            <option value="theme" id="color-mode-theme">Theo chủ đề</option>
-            <option value="custom" id="color-mode-custom">Tùy chỉnh</option>
-          </select>
-        </div>
-        <div class="color-row">
-          <label id="label-primary-color" for="primary-color">Màu chính</label>
-          <input type="color" id="primary-color" value="#39ff14" />
-        </div>
-        <div class="color-row">
-          <label id="label-secondary-color" for="secondary-color">Màu phụ</label>
-          <input type="color" id="secondary-color" value="#ff00ff" />
-        </div>
-        <div class="color-row">
-          <label id="label-bg-color" for="bg-color">Màu nền</label>
-          <input type="color" id="bg-color" value="#000510" />
-        </div>
-        <div id="label-object-color-sub" class="subsection-label object-only">Object Floating</div>
-        <div class="color-mode-row object-only">
-          <label id="label-object-color-mode" for="object-color-mode-select">Màu object</label>
-          <select id="object-color-mode-select" class="control-select">
-            <option value="auto" id="object-color-mode-auto">Auto nổi bật</option>
-            <option value="custom" id="object-color-mode-custom">Tùy chỉnh</option>
-          </select>
-        </div>
-        <div class="color-row object-only">
-          <label id="label-object-color" for="object-color">Màu object</label>
-          <input type="color" id="object-color" value="#b7ff2a" />
-        </div>
-      </div>
-
+      <!-- THEME + COLOR -->
       <div class="ui-section">
         <div id="label-theme" class="section-label">CHỦ ĐỀ</div>
         <select id="theme-selector" class="control-select">
@@ -241,7 +150,21 @@
           <option value="darkIndustrial" id="theme-darkIndustrial">Công nghiệp bóng tối</option>
           <option value="galaxyWarp" id="theme-galaxyWarp">Xuyên ngân hà</option>
         </select>
-        <button id="randomize-btn" class="randomize-btn">
+        <div class="color-row-inline">
+          <div class="color-row">
+            <label id="label-primary-color" for="primary-color">Màu 1</label>
+            <input type="color" id="primary-color" value="#39ff14" />
+          </div>
+          <div class="color-row">
+            <label id="label-secondary-color" for="secondary-color">Màu 2</label>
+            <input type="color" id="secondary-color" value="#ff00ff" />
+          </div>
+          <div class="color-row">
+            <label id="label-bg-color" for="bg-color">Nền</label>
+            <input type="color" id="bg-color" value="#000510" />
+          </div>
+        </div>
+        <button id="randomize-btn" class="randomize-btn" style="margin-top:8px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="16 3 21 3 21 8"></polyline>
             <line x1="4" y1="20" x2="21" y2="3"></line>
@@ -251,15 +174,6 @@
           </svg>
           <span id="randomize-text">Trộn ngẫu nhiên</span>
         </button>
-      </div>
-
-      <div class="ui-section">
-        <div id="label-live-set" class="section-label">LIVE SET</div>
-        <div class="preset-bank">
-          <button id="preset-drop" class="preset-btn preset-btn-active">Drop</button>
-          <button id="preset-breakdown" class="preset-btn">Breakdown</button>
-          <button id="preset-build-up" class="preset-btn">Build-up</button>
-        </div>
       </div>
 
       <div class="ui-section fps-section">
@@ -279,6 +193,5 @@
 
   <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
-
-

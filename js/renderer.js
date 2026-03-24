@@ -50,8 +50,10 @@ export class TunnelRenderer {
         uHigh:            { value: 0 },
         uKaleidoscope:    { value: 0.5 },
         uKaleidoscopeMode:{ value: 0 },
+        uKaleidoscopeModePrevious:{ value: 0 },
         uKaleidoscopeAngle:{ value: 0 },
         uKaleidoscopeFlash:{ value: 0 },
+        uKaleidoscopeFade:{ value: 1.0 },
         uDistortion:      { value: 0.8 },
         uGlowIntensity:   { value: 1.6 },
         uColor1:          { value: new THREE.Vector3(0, 1, 1) },
@@ -138,6 +140,7 @@ export class TunnelRenderer {
     this._customModelTemplate = null;
     this.cloneCount = 1;
     this.cloneFreeFly = false;
+    this.objectGap = 0.28;
 
     window.addEventListener('mousemove', (e) => {
       this._mouseTarget.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -149,7 +152,6 @@ export class TunnelRenderer {
   }
 
   _createDefaultObject() {
-    // No geometric fallback: robot model is the intended default object.
     return new THREE.Group();
   }
 
@@ -243,6 +245,10 @@ export class TunnelRenderer {
 
   setObjectScale(scale) {
     this.objectScale = Math.max(0.02, Math.min(0.6, Number(scale) || 0.3));
+  }
+
+  setObjectGap(gapScale) {
+    this.objectGap = Math.max(0.02, Math.min(1.5, Number(gapScale) || 0.28));
   }
 
   setObjectRotation(xDeg, yDeg, zDeg) {
@@ -373,49 +379,47 @@ export class TunnelRenderer {
     this._lastPhysicsTime = now;
     this.hoverMix = 0.0;
 
-    const bassPulse = bass > 0.1 ? (bass - 0.1) * 0.15 : 0.0;
-    // Base pulsates subtly + minor bass sync
-    const flicker = Math.sin(time * 15.0) * 0.015;
-    const baseScale = 1.0 + flicker + bassPulse; 
-    const finalScale = this._objectBaseScale * this.objectScale * baseScale;
-    this.objectRoot.scale.setScalar(finalScale);
+    // Make size sync sharply with bass ("nháy theo nhạc")
+    // Cap the maximum scaling effect at 20% (0.2) to prevent excessive bloating
+    // Dynamic reactive factors
+    // When bass is low (subtle), objects get smaller and move closer to center
+    // Extremely high exponent (6.0) ensures only the very absolute peaks trigger a large size/spread
+    const beatSnap = Math.pow(bass, 6.0);
     
-    // Increased floating range and speed ("scroll more")
-    this.objectTargetPos.x = Math.sin(time * 0.65) * (0.35 + mid * 0.15);
-    this.objectTargetPos.y = Math.cos(time * 0.92) * (0.28 + high * 0.12);
+    // Base size 0.55, music-driven jump reduced to 1.0 for a more moderate 0.3 peak change
+    const sizeFactor = 0.55 + beatSnap * 1.0; 
+    const flicker = Math.sin(time * 15.0) * 0.012;
+    const finalScale = this._objectBaseScale * this.objectScale * (sizeFactor + flicker);
+    
+    // 2. Center positioning target (keep it centered per previous request)
+    this.objectTargetPos.x = Math.sin(time * 0.4) * (0.1 + mid * 0.04);
+    this.objectTargetPos.y = Math.cos(time * 0.5) * (0.07 + high * 0.03);
 
-    const spring = 0.78;
-    const damping = 0.95;
+    const spring = 0.35;
+    const damping = 0.82;
     const ax = (this.objectTargetPos.x - this.objectGroup.position.x) * spring;
     const ay = (this.objectTargetPos.y - this.objectGroup.position.y) * spring;
     this.objectVelocity.x = (this.objectVelocity.x + ax * dt * 60.0) * damping;
     this.objectVelocity.y = (this.objectVelocity.y + ay * dt * 60.0) * damping;
 
-    // Bass-only directional kicks
-    if (bass > 0.74 && (now - this._lastBassKickTime) > 150) {
-      const kick = (bass - 0.74) * 1.5; // Slightly increased for visibility
-      const dirAngle = time * 4.4 + Math.sin(time * 1.7) * 1.2;
-      const dirX = Math.cos(dirAngle);
-      const dirY = Math.sin(dirAngle);
-      this.objectVelocity.x += dirX * kick;
-      this.objectVelocity.y += dirY * kick;
-      this.objectAngularVelocity.y += dirX * kick * 0.35;
-      this.objectAngularVelocity.x += dirY * kick * 0.35;
+    // Small angular pulse for rhythm
+    if (bass > 0.8 && (now - this._lastBassKickTime) > 200) {
+      this.objectAngularVelocity.y += (bass - 0.8) * 0.04;
       this._lastBassKickTime = now;
     }
 
     this.objectGroup.position.x += this.objectVelocity.x * dt * 60.0;
     this.objectGroup.position.y += this.objectVelocity.y * dt * 60.0;
+    this.objectGroup.position.lerp(this._origin, 0.02);
     this._applyBoundaryBounce();
 
     if (this._isCustomModel) {
-      // Reduced centering force to allow more "scrolling/drifting"
-      this.objectGroup.position.lerp(this._origin, 0.035); 
       const ringSpin = time * 0.16;
-      const radiusPulse = 1.0 + bassPulse * 0.15; // Slightly reduced
       
-      // Auto-rotation over time like a globe (faster now)
-      const globeTime = time * 1.1; // Increased rotation speed
+      // 3. Dynamic Clone Radius:
+      // Radius expands on beats
+      
+      const globeTime = time * 1.1;
       this._tmpEuler.set(
         THREE.MathUtils.degToRad(this.objectRotationDeg.x) + globeTime * 0.45,
         THREE.MathUtils.degToRad(this.objectRotationDeg.y) + globeTime * 0.9,
@@ -426,52 +430,57 @@ export class TunnelRenderer {
       for (let i = 0; i < this.objectNodes.length; i++) {
         const node = this.objectNodes[i];
         const m = this.objectNodeMeta[i];
-        if (!node || !m) continue;
-        const a = m.angle + ringSpin;
-        if (this.cloneFreeFly) {
-          const driftAmp = 0.2 + bassPulse * 0.16;
-          node.position.x =
-            Math.cos(a) * m.radius * 0.72 * radiusPulse +
-            Math.sin(time * m.speedX + m.phase) * driftAmp;
-          node.position.y =
-            Math.sin(a) * m.radius * m.yScale * 0.72 * radiusPulse +
-            Math.cos(time * m.speedY + m.phase * 1.37) * driftAmp * 0.82;
+        if (!node) continue;
+        
+        node.visible = true; // FORCE VISIBILITY
+        
+        const a = (m ? m.angle : 0) + ringSpin;
+        
+        // Clones stay clustered at base (objectGap) on silence and light bass
+        // objectGap is user-controlled via slider
+        const radiusPulse = this.objectGap + beatSnap * 1.0;
+        let ringX = Math.cos(a) * (m ? m.radius : 0) * radiusPulse;
+        let ringY = Math.sin(a) * (m ? m.radius : 0) * (m ? m.yScale : 1.0) * radiusPulse;
+
+        if (this.cloneFreeFly && m) {
+          const driftAmp = 0.15 + beatSnap * 0.15;
+          node.position.x = ringX + Math.sin(time * m.speedX + m.phase) * driftAmp;
+          node.position.y = ringY + Math.cos(time * m.speedY + m.phase * 1.37) * driftAmp * 0.8;
         } else {
-          node.position.x = Math.cos(a) * m.radius * radiusPulse;
-          node.position.y = Math.sin(a) * m.radius * m.yScale * radiusPulse;
+          node.position.x = ringX;
+          node.position.y = ringY;
         }
         node.position.z = 0.0;
-        node.quaternion.copy(this._tmpTargetQuat); // Use rotating quat instead of locked
-        node.scale.setScalar(finalScale);
+        node.quaternion.copy(this._tmpTargetQuat);
+        
+        // Ensure scale is never zero or extremely tiny
+        const safeScale = Math.max(finalScale, 0.001);
+        node.scale.setScalar(safeScale);
       }
       this.objectAngularVelocity.multiplyScalar(0.75);
     } else {
-      this.objectAngularVelocity.x += (0.006 + bassPulse * 0.05) * dt * 60.0;
-      this.objectAngularVelocity.y += (0.008 + bassPulse * 0.07) * dt * 60.0;
-      this.objectAngularVelocity.z += (Math.sin(time * 1.4) * 0.002) * dt * 60.0;
-      this.objectAngularVelocity.multiplyScalar(0.97);
-
-      this.objectRoot.rotation.x += this.objectAngularVelocity.x * dt;
-      this.objectRoot.rotation.y += this.objectAngularVelocity.y * dt;
-      this.objectRoot.rotation.z += this.objectAngularVelocity.z * dt;
+      // Fallback for default object
+      this.objectRoot.scale.setScalar(finalScale); 
+      this.objectRoot.rotation.x += (0.006 + beatSnap * 0.05) * dt * 10.0;
+      this.objectRoot.rotation.y += (0.008 + beatSnap * 0.07) * dt * 10.0;
     }
 
     const keyCol = new THREE.Color().setHSL((0.34 + bass * 0.14 + time * 0.025) % 1, 0.9, 0.6);
     const fillCol = new THREE.Color().setHSL((0.82 + bass * 0.16 - time * 0.02) % 1, 0.9, 0.58);
     this.keyLight.color.copy(keyCol);
     this.fillLight.color.copy(fillCol);
-    this.keyLight.intensity = 0.8 + bassPulse * 1.8;
-    this.fillLight.intensity = 0.5 + bassPulse * 1.0;
+    this.keyLight.intensity = 0.8 + beatSnap * 1.8;
+    this.fillLight.intensity = 0.5 + beatSnap * 1.0;
 
     this._forEachObjectMaterial((mat, child) => {
       if (mat.emissiveIntensity !== undefined) {
         const baseE = child.userData.baseEmissiveIntensity ?? 0.75;
-        mat.emissiveIntensity = baseE + bassPulse * 1.4;
+        mat.emissiveIntensity = baseE + beatSnap * 1.4;
       }
       if (mat.transmission !== undefined) {
-        mat.roughness = 0.05 + (1.0 - bassPulse) * 0.02;
+        mat.roughness = 0.05 + (1.0 - beatSnap) * 0.02;
         mat.ior = 1.2;
-        mat.thickness = 0.92 + bassPulse * 0.6;
+        mat.thickness = 0.92 + beatSnap * 0.6;
       }
     });
   }
@@ -486,8 +495,10 @@ export class TunnelRenderer {
     u.uHigh.value = audioData.high;
     u.uKaleidoscope.value = settings.kaleidoscope;
     u.uKaleidoscopeMode.value = settings.kaleidoscopeMode || 0;
+    u.uKaleidoscopeModePrevious.value = settings.kaleidoscopeModePrevious || 0;
     u.uKaleidoscopeAngle.value = settings.kaleidoscopeAngle || 0;
     u.uKaleidoscopeFlash.value = settings.kaleidoscopeFlash || 0;
+    u.uKaleidoscopeFade.value = settings.kaleidoscopeFade !== undefined ? settings.kaleidoscopeFade : 1.0;
     u.uDistortion.value = settings.distortion ?? 0.8;
     u.uGlowIntensity.value = settings.glowIntensity;
     u.uColorShiftSpeed.value = settings.colorShiftSpeed;

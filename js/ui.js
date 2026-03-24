@@ -17,49 +17,27 @@ export class UIController {
       cloneCountLabel: document.getElementById('label-clone-count'),
       cloneCountSlider: document.getElementById('clone-count-slider'),
       cloneCountValue: document.getElementById('clone-count-value'),
-      objectRotXLabel: document.getElementById('label-object-rot-x'),
-      objectRotXSlider: document.getElementById('object-rot-x-slider'),
-      objectRotXValue: document.getElementById('object-rot-x-value'),
-      objectRotYLabel: document.getElementById('label-object-rot-y'),
-      objectRotYSlider: document.getElementById('object-rot-y-slider'),
-      objectRotYValue: document.getElementById('object-rot-y-value'),
-      objectRotZLabel: document.getElementById('label-object-rot-z'),
-      objectRotZSlider: document.getElementById('object-rot-z-slider'),
-      objectRotZValue: document.getElementById('object-rot-z-value'),
       objectSizeLabel: document.getElementById('label-object-size'),
       objectSizeSlider: document.getElementById('object-size-slider'),
       objectSizeValue: document.getElementById('object-size-value'),
       cloneFreeFlyLabel: document.getElementById('label-clone-freefly'),
       cloneFreeFlyToggle: document.getElementById('clone-freefly-toggle'),
-      welcomeCopy: document.getElementById('welcome-copy'),
+      labelObjectGap: document.getElementById('label-object-gap'),
+      objectGapSlider: document.getElementById('object-gap-slider'),
+      objectGapValue: document.getElementById('object-gap-value'),
       labelAudio: document.getElementById('label-audio'),
       labelControls: document.getElementById('label-controls'),
-      labelObjectSub: document.getElementById('label-object-sub'),
       labelSpeed: document.getElementById('label-speed'),
       labelSensitivity: document.getElementById('label-sensitivity'),
       labelKaleidoscope: document.getElementById('label-kaleidoscope'),
       labelKaleidoscopeAuto: document.getElementById('label-kaleidoscope-auto'),
-      kaleidoscopeModeName: document.getElementById('label-kaleidoscope-mode-name'),
       labelWave: document.getElementById('label-wave'),
       labelTwist: document.getElementById('label-twist'),
-      labelParticle: document.getElementById('label-particle'),
-      labelObjectBoost: document.getElementById('label-object-boost'),
       labelChaos: document.getElementById('label-chaos'),
-      labelParticleShape: document.getElementById('label-particle-shape'),
-      labelObjectDistance: document.getElementById('label-object-distance'),
-      labelAutomix: document.getElementById('label-automix'),
-      labelObjectEnabled: document.getElementById('label-object-enabled'),
-      labelColor: document.getElementById('label-color'),
-      labelTunnelColorSub: document.getElementById('label-tunnel-color-sub'),
-      labelObjectColorSub: document.getElementById('label-object-color-sub'),
-      labelColorMode: document.getElementById('label-color-mode'),
       labelPrimaryColor: document.getElementById('label-primary-color'),
       labelSecondaryColor: document.getElementById('label-secondary-color'),
       labelBgColor: document.getElementById('label-bg-color'),
-      labelObjectColorMode: document.getElementById('label-object-color-mode'),
-      labelObjectColor: document.getElementById('label-object-color'),
       labelTheme: document.getElementById('label-theme'),
-      labelLiveSet: document.getElementById('label-live-set'),
       randomizeText: document.getElementById('randomize-text'),
       langToggle: document.getElementById('lang-toggle'),
       labelVolume: document.getElementById('label-volume'),
@@ -74,55 +52,28 @@ export class UIController {
       sensitivityValue: document.getElementById('sensitivity-value'),
       kaleidoscopeSlider: document.getElementById('kaleidoscope-slider'),
       kaleidoscopeValue: document.getElementById('kaleidoscope-value'),
+      kaleidoscopeAutoToggle: document.getElementById('kaleidoscope-auto-toggle'),
+      kaleidoscopeItems: document.querySelectorAll('.k-item'),
       waveSlider: document.getElementById('wave-slider'),
       waveValue: document.getElementById('wave-value'),
       twistSlider: document.getElementById('twist-slider'),
       twistValue: document.getElementById('twist-value'),
-      particleSlider: document.getElementById('particle-slider'),
-      particleValue: document.getElementById('particle-value'),
-      objectBoostSlider: document.getElementById('object-boost-slider'),
-      objectBoostValue: document.getElementById('object-boost-value'),
       chaosSlider: document.getElementById('chaos-slider'),
       chaosValue: document.getElementById('chaos-value'),
-      particleShapeSelect: document.getElementById('particle-shape-select'),
-      objectDistanceSelect: document.getElementById('object-distance-select'),
-      automixToggle: document.getElementById('automix-toggle'),
-      kaleidoscopeAutoToggle: document.getElementById('kaleidoscope-auto-toggle'),
-      kaleidoscopeItems: document.querySelectorAll('.k-item'),
-      objectEnabledToggle: document.getElementById('object-enabled-toggle'),
-      colorModeSelect: document.getElementById('color-mode-select'),
-      objectColorModeSelect: document.getElementById('object-color-mode-select'),
       primaryColor: document.getElementById('primary-color'),
       secondaryColor: document.getElementById('secondary-color'),
       bgColor: document.getElementById('bg-color'),
-      objectColor: document.getElementById('object-color'),
       themeSelector: document.getElementById('theme-selector'),
-      presetDrop: document.getElementById('preset-drop'),
-      presetBreakdown: document.getElementById('preset-breakdown'),
-      presetBuildUp: document.getElementById('preset-build-up'),
       randomizeBtn: document.getElementById('randomize-btn'),
       togglePanel: document.getElementById('toggle-panel'),
       panel: document.getElementById('ui-panel'),
       fpsCounter: document.getElementById('fps-counter'),
-      visualizerCanvas: document.getElementById('visualizer-canvas'),
       themeNeonCyberpunk: document.getElementById('theme-neonCyberpunk'),
       themePsychedelicRainbow: document.getElementById('theme-psychedelicRainbow'),
       themeDarkIndustrial: document.getElementById('theme-darkIndustrial'),
       themeGalaxyWarp: document.getElementById('theme-galaxyWarp'),
-      shapeMix: document.getElementById('shape-mix'),
-      shapeSphere: document.getElementById('shape-sphere'),
-      shapeBox: document.getElementById('shape-box'),
-      shapeCylinder: document.getElementById('shape-cylinder'),
-      shapeTorus: document.getElementById('shape-torus'),
-      distanceNear: document.getElementById('distance-near'),
-      distanceMid: document.getElementById('distance-mid'),
-      distanceFar: document.getElementById('distance-far'),
-      objectColorModeAuto: document.getElementById('object-color-mode-auto'),
-      objectColorModeCustom: document.getElementById('object-color-mode-custom'),
     };
 
-    this._vizCtx = this.els.visualizerCanvas.getContext('2d');
-    this._vizLastTime = 0;
     this._fpsFrames = 0;
     this._fpsTime = performance.now();
     this._accentColor = '#39ff14';
@@ -162,6 +113,7 @@ export class UIController {
         objectDistance: 'Khoảng cách',
         automix: 'Trộn ngẫu nhiên',
         kaleidoscopeAuto: 'AUTO MIX KALEIDOSCOPE',
+        cooldown: 'Switch Cooldown (ms)',
         kaleidoscopeModes: [
           'Radial', 'Mirror', 'Triangle', 'Spiral', 'Diamond',
           'HexGrid', 'Zoom', 'Fractal', 'Polka', 'Ribbon'
@@ -239,6 +191,7 @@ export class UIController {
         objectDistance: 'Object Distance',
         automix: 'Random Mix',
         kaleidoscopeAuto: 'AUTO MIX KALEIDOSCOPE',
+        cooldown: 'Switch Cooldown (ms)',
         kaleidoscopeModes: [
           'Radial', 'Mirror', 'Triangle', 'Spiral', 'Diamond',
           'HexGrid', 'Zoom', 'Fractal', 'Polka', 'Ribbon'
@@ -297,9 +250,9 @@ export class UIController {
       label.textContent = 'Decoding...';
       this.els.playBtn.disabled = true;
       this.resetPlaybackUI();
-      
+
       await this.callbacks.onFileLoad(file);
-      
+
       label.textContent = file.name.length > 18
         ? file.name.slice(0, 16) + '...' : file.name;
       this.els.playBtn.disabled = false;
@@ -315,10 +268,11 @@ export class UIController {
     this.els.objectToggle.addEventListener('change', e => this.callbacks.onObjectToggle(e.target.checked));
     this._bindSlider('objectSizeSlider', 'objectSizeValue', v => this.callbacks.onObjectSizeChange(v / 100));
     this._bindSlider('cloneCountSlider', 'cloneCountValue', v => this.callbacks.onCloneCountChange(v));
-    this._bindSlider('objectRotXSlider', 'objectRotXValue', v => this.callbacks.onObjectRotXChange(v));
-    this._bindSlider('objectRotYSlider', 'objectRotYValue', v => this.callbacks.onObjectRotYChange(v));
-    this._bindSlider('objectRotZSlider', 'objectRotZValue', v => this.callbacks.onObjectRotZChange(v));
-    this.els.cloneFreeFlyToggle.addEventListener('change', e => this.callbacks.onCloneFreeFlyChange(e.target.checked));
+    this._bindSlider('objectGapSlider', 'objectGapValue', v => this.callbacks.onObjectGapChange(v / 100));
+    this.els.cloneFreeFlyToggle.addEventListener('change', e => {
+      this.callbacks.onCloneFreeFlyChange(e.target.checked);
+      this._updateGapSliderState(e.target.checked);
+    });
 
     // Play/Pause
     this.els.playBtn.addEventListener('click', () => {
@@ -345,7 +299,7 @@ export class UIController {
             this.callbacks.onKaleidoscopeModeChange(mode);
           }
           this.setKaleidoscopeMode(mode);
-          
+
           if (this.els.kaleidoscopeAutoToggle && this.els.kaleidoscopeAutoToggle.checked) {
             this.els.kaleidoscopeAutoToggle.checked = false;
             if (this.callbacks.onKaleidoscopeAutoModeChange) {
@@ -362,13 +316,15 @@ export class UIController {
     this._bindSlider('kaleidoscopeSlider', 'kaleidoscopeValue', v => this.callbacks.onKaleidoscopeChange(v / 100));
     this._bindSlider('waveSlider', 'waveValue', v => this.callbacks.onWaveChange(v / 100));
     this._bindSlider('twistSlider', 'twistValue', v => this.callbacks.onTwistChange(v / 100));
-    this._bindSlider('particleSlider', 'particleValue', v => this.callbacks.onParticleChange(v / 100));
-    this._bindSlider('objectBoostSlider', 'objectBoostValue', v => this.callbacks.onObjectBoostChange(v / 100));
     this._bindSlider('chaosSlider', 'chaosValue', v => this.callbacks.onChaosChange(v / 100));
-    this.els.particleShapeSelect.addEventListener('change', e => this.callbacks.onParticleShapeChange(e.target.value));
-    this.els.objectDistanceSelect.addEventListener('change', e => this.callbacks.onObjectDistanceChange(e.target.value));
-    this.els.automixToggle.addEventListener('change', e => this.callbacks.onAutoMixChange(e.target.checked));
-    this.els.objectEnabledToggle.addEventListener('change', e => this.callbacks.onObjectEnabledChange(e.target.checked));
+    // Explicit bind for cooldown (doesn't normalize)
+    if (this.els.cooldownSlider) {
+      this.els.cooldownSlider.addEventListener('input', e => {
+        const v = parseInt(e.target.value);
+        this.els.cooldownValue.textContent = v;
+        if (this.callbacks.onCooldownChange) this.callbacks.onCooldownChange(v);
+      });
+    }
 
     // Color
     this.els.primaryColor.addEventListener('input', e => {
@@ -377,20 +333,12 @@ export class UIController {
     });
     this.els.secondaryColor.addEventListener('input', e => this.callbacks.onSecondaryColorChange(e.target.value));
     this.els.bgColor.addEventListener('input', e => this.callbacks.onBgColorChange(e.target.value));
-    this.els.objectColor.addEventListener('input', e => this.callbacks.onObjectColorChange(e.target.value));
-    this.els.colorModeSelect.addEventListener('change', e => this.callbacks.onColorModeChange(e.target.value));
-    this.els.objectColorModeSelect.addEventListener('change', e => this.callbacks.onObjectColorModeChange(e.target.value));
 
     // Theme
     this.els.themeSelector.addEventListener('change', e => this.callbacks.onThemeChange(e.target.value));
 
     // Randomize
     this.els.randomizeBtn.addEventListener('click', () => this.callbacks.onRandomize());
-
-    // Live preset bank
-    this.els.presetDrop.addEventListener('click', () => this.callbacks.onLivePresetChange('drop'));
-    this.els.presetBreakdown.addEventListener('click', () => this.callbacks.onLivePresetChange('breakdown'));
-    this.els.presetBuildUp.addEventListener('click', () => this.callbacks.onLivePresetChange('buildUp'));
 
     // Language toggle
     this.els.langToggle.addEventListener('click', () => {
@@ -452,6 +400,18 @@ export class UIController {
 
   setCloneFreeFly(enabled) {
     this.els.cloneFreeFlyToggle.checked = Boolean(enabled);
+    this._updateGapSliderState(enabled);
+  }
+
+  setObjectGap(scaleNorm) {
+    this._setSlider('objectGapSlider', 'objectGapValue', scaleNorm);
+  }
+
+  _updateGapSliderState(freeFlyEnabled) {
+    if (!this.els.objectGapSlider) return;
+    this.els.objectGapSlider.disabled = Boolean(freeFlyEnabled);
+    const group = this.els.objectGapSlider.closest('.slider-group');
+    if (group) group.style.opacity = freeFlyEnabled ? '0.4' : '1.0';
   }
 
   setPrimaryColor(hexColor) {
@@ -467,18 +427,7 @@ export class UIController {
     this.els.bgColor.value = hexColor;
   }
 
-  setObjectColor(hexColor) {
-    this.els.objectColor.value = hexColor;
-  }
-
-  setColorMode(mode) {
-    const value = mode === 'custom' ? 'custom' : 'theme';
-    this.els.colorModeSelect.value = value;
-    const disable = value === 'theme';
-    this.els.primaryColor.disabled = disable;
-    this.els.secondaryColor.disabled = disable;
-    this.els.bgColor.disabled = disable;
-  }
+  setColorMode() { /* removed, using theme mode only */ }
 
   setKaleidoscopeMode(mode) {
     if (!this.els.kaleidoscopeItems) return;
@@ -486,11 +435,6 @@ export class UIController {
       const btnMode = parseInt(btn.getAttribute('data-mode'));
       if (btnMode === mode) {
         btn.classList.add('active');
-        // Update label
-        const modeNames = this._translations[this._currentLanguage]?.kaleidoscopeModes;
-        if (this.els.kaleidoscopeModeName && modeNames && modeNames[mode]) {
-          this.els.kaleidoscopeModeName.textContent = modeNames[mode];
-        }
       } else {
         btn.classList.remove('active');
       }
@@ -503,39 +447,13 @@ export class UIController {
     }
   }
 
-  setLivePreset(presetKey) {
-    const btns = [
-      this.els.presetDrop,
-      this.els.presetBreakdown,
-      this.els.presetBuildUp,
-    ];
-    btns.forEach(btn => btn.classList.remove('preset-btn-active'));
-    if (presetKey === 'drop') this.els.presetDrop.classList.add('preset-btn-active');
-    if (presetKey === 'breakdown') this.els.presetBreakdown.classList.add('preset-btn-active');
-    if (presetKey === 'buildUp') this.els.presetBuildUp.classList.add('preset-btn-active');
-  }
-
-  setAutoMix(enabled) {
-    this.els.automixToggle.checked = Boolean(enabled);
-  }
-
-  setObjectEnabled(enabled) {
-    this.els.objectEnabledToggle.checked = Boolean(enabled);
-  }
-
-  setParticleShape(shapeKey) {
-    this.els.particleShapeSelect.value = shapeKey || 'mix';
-  }
-
-  setObjectColorMode(mode) {
-    const value = mode === 'custom' ? 'custom' : 'auto';
-    this.els.objectColorModeSelect.value = value;
-    this.els.objectColor.disabled = value !== 'custom';
-  }
-
-  setObjectDistance(distanceKey) {
-    this.els.objectDistanceSelect.value = distanceKey || 'mid';
-  }
+  setLivePreset() { /* removed */ }
+  setAutoMix() { /* removed */ }
+  setObjectEnabled() { /* removed */ }
+  setParticleShape() { /* removed */ }
+  setObjectColorMode() { /* removed */ }
+  setObjectDistance() { /* removed */ }
+  setObjectColor() { /* removed */ }
 
   setCoreControls(values) {
     if (typeof values.speed === 'number') this._setSlider('speedSlider', 'speedValue', values.speed);
@@ -551,42 +469,25 @@ export class UIController {
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) metaDescription.setAttribute('content', t.pageDescription);
 
-    this.els.welcomeCopy.textContent = t.welcome;
     this.els.labelAudio.textContent = t.sectionAudio;
     this.els.labelControls.textContent = t.sectionControls;
-    this.els.labelObjectSub.textContent = t.sectionObjectSub;
-    this.els.labelColor.textContent = t.sectionColor;
-    this.els.labelTunnelColorSub.textContent = t.sectionTunnelColorSub;
-    this.els.labelObjectColorSub.textContent = t.sectionObjectColorSub;
-    this.els.labelColorMode.textContent = t.colorMode;
     this.els.labelTheme.textContent = t.sectionTheme;
-    this.els.labelLiveSet.textContent = t.sectionLiveSet;
     this.els.labelVolume.textContent = t.volume;
     this.els.labelSpeed.textContent = t.speed;
     this.els.labelSensitivity.textContent = t.sensitivity;
     this.els.labelKaleidoscope.textContent = t.kaleidoscope;
-    if (this.els.labelKaleidoscopeAuto) this.els.labelKaleidoscopeAuto.textContent = t.kaleidoscopeAuto;
+    if (this.els.labelKaleidoscopeAuto) this.els.labelKaleidoscopeAuto.textContent = t.kaleidoscopeAuto || t.autoMode;
 
     this.els.labelWave.textContent = t.wave;
     this.els.labelTwist.textContent = t.twist;
-    this.els.labelParticle.textContent = t.particle;
-    this.els.labelObjectBoost.textContent = t.objectBoost;
     this.els.labelChaos.textContent = t.chaos;
-    this.els.labelParticleShape.textContent = t.particleShape;
-    this.els.labelObjectDistance.textContent = t.objectDistance;
-    this.els.labelAutomix.textContent = t.automix;
-    this.els.labelObjectEnabled.textContent = t.objectEnabled;
     this.els.labelPrimaryColor.textContent = t.primaryColor;
     this.els.labelSecondaryColor.textContent = t.secondaryColor;
     this.els.labelBgColor.textContent = t.backgroundColor;
-    this.els.labelObjectColorMode.textContent = t.objectColorMode;
-    this.els.labelObjectColor.textContent = t.objectColor;
     this.els.objectSizeLabel.textContent = t.objectSize;
-    this.els.objectRotXLabel.textContent = t.objectRotX;
-    this.els.objectRotYLabel.textContent = t.objectRotY;
-    this.els.objectRotZLabel.textContent = t.objectRotZ;
     this.els.cloneCountLabel.textContent = t.cloneCount;
     this.els.cloneFreeFlyLabel.textContent = t.cloneFreeFly;
+    if (this.els.labelObjectGap) this.els.labelObjectGap.textContent = t.objectGap || 'Khoảng cách';
     this.els.randomizeText.textContent = t.randomize;
     this.els.togglePanel.title = t.toggleTitle;
     this.els.langToggle.title = t.langTitle;
@@ -603,23 +504,6 @@ export class UIController {
     this.els.themePsychedelicRainbow.textContent = t.theme.psychedelicRainbow;
     this.els.themeDarkIndustrial.textContent = t.theme.darkIndustrial;
     this.els.themeGalaxyWarp.textContent = t.theme.galaxyWarp;
-    this.els.presetDrop.textContent = t.preset.drop;
-    this.els.presetBreakdown.textContent = t.preset.breakdown;
-    this.els.presetBuildUp.textContent = t.preset.buildUp;
-    this.els.shapeMix.textContent = t.shape.mix;
-    this.els.shapeSphere.textContent = t.shape.sphere;
-    this.els.shapeBox.textContent = t.shape.box;
-    this.els.shapeCylinder.textContent = t.shape.cylinder;
-    this.els.shapeTorus.textContent = t.shape.torus;
-    this.els.distanceNear.textContent = t.distance.near;
-    this.els.distanceMid.textContent = t.distance.mid;
-    this.els.distanceFar.textContent = t.distance.far;
-    const modeTheme = document.getElementById('color-mode-theme');
-    const modeCustom = document.getElementById('color-mode-custom');
-    if (modeTheme) modeTheme.textContent = t.modeTheme;
-    if (modeCustom) modeCustom.textContent = t.modeCustom;
-    this.els.objectColorModeAuto.textContent = t.objectColorModeAuto;
-    this.els.objectColorModeCustom.textContent = t.objectColorModeCustom;
   }
 
   setTunnelControls(values) {
@@ -637,7 +521,11 @@ export class UIController {
     const slider = this.els[sliderId];
     const valueEl = this.els[valueId];
     if (!slider || !valueEl) return;
-    const v = Math.max(0, Math.min(100, Math.round(normalizedValue * 100)));
+
+    const minVal = slider.hasAttribute('min') ? parseInt(slider.min) : 0;
+    const maxVal = slider.hasAttribute('max') ? parseInt(slider.max) : 100;
+    const v = Math.max(minVal, Math.min(maxVal, Math.round(normalizedValue * 100)));
+
     slider.value = String(v);
     valueEl.textContent = String(v);
   }

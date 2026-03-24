@@ -23,8 +23,10 @@ export const fragmentShader = /* glsl */ `
 
   uniform float uKaleidoscope;
   uniform float uKaleidoscopeMode;
+  uniform float uKaleidoscopeModePrevious;
   uniform float uKaleidoscopeAngle;
   uniform float uKaleidoscopeFlash;
+  uniform float uKaleidoscopeFade;
   uniform float uDistortion;
   uniform float uGlowIntensity;
 
@@ -78,11 +80,16 @@ export const fragmentShader = /* glsl */ `
   vec2 kaleidoscope(vec2 uv, float segments, float mode, float angleOffset) {
     if (mode < 0.5) {
       // Mode 0: Radial (Standard)
+      // Ensure segments is an integer to avoid broken UV wrap seams
+      float s = max(1.0, floor(segments + 0.5));
       float angle = atan(uv.y, uv.x) + angleOffset;
       float radius = length(uv);
-      float segAngle = TAU / max(segments, 1.0);
-      angle = mod(angle, segAngle);
+      float segAngle = TAU / s;
+      
+      // Add TAU * 10.0 to prevent negative angle mod bugs in WebGL/Windows D3D
+      angle = mod(angle + TAU * 10.0, segAngle);
       angle = abs(angle - segAngle * 0.5);
+      
       return vec2(cos(angle), sin(angle)) * radius;
     } else if (mode < 1.5) {
       // Mode 1: Mirror
@@ -182,16 +189,24 @@ export const fragmentShader = /* glsl */ `
     float mouseWarp = 0.085 / (mouseDist + 0.32);
     baseUv += (baseUv - uMouse * 0.8) * mouseWarp * 0.07;
 
-    vec2 uv = baseUv;
-    float kSegments = mix(1.0, 12.0, uKaleidoscope);
-    if (uKaleidoscope > 0.01) {
-      uv = kaleidoscope(uv, kSegments, uKaleidoscopeMode, uKaleidoscopeAngle * TAU);
-    }
-
     float bassN = pow(clamp(uBass, 0.0, 1.0), 1.55);
-    float midN = smoothstep(0.05, 0.95, uMid);
+    float midN = pow(clamp(uMid, 0.0, 1.0), 1.3);
     float highN = pow(clamp(uHigh, 0.0, 1.0), 1.25);
     float chaosCtrl = smoothstep(0.0, 1.0, uChaosAmount);
+
+    baseUv *= (1.0 - bassN * 0.12);
+
+    vec2 uv = baseUv;
+    float kSegments = mix(1.0, 12.0, uKaleidoscope) + bassN * 5.0;
+    if (uKaleidoscope > 0.01) {
+      vec2 k1 = kaleidoscope(uv, kSegments, uKaleidoscopeMode, uKaleidoscopeAngle * TAU);
+      if (uKaleidoscopeFade < 1.0) {
+        vec2 k2 = kaleidoscope(uv, kSegments, uKaleidoscopeModePrevious, uKaleidoscopeAngle * TAU);
+        uv = mix(k2, k1, smoothstep(0.0, 1.0, uKaleidoscopeFade));
+      } else {
+        uv = k1;
+      }
+    }
 
     float radius = max(length(uv), 0.001);
     float angle = atan(uv.y, uv.x);
@@ -266,10 +281,10 @@ export const fragmentShader = /* glsl */ `
       uTime * (uColorShiftSpeed * 0.16 + 0.05) +
       tunnelV * 0.028 +
       tunnelU * 0.07 +
-      highN * 0.5
+      highN * 0.8
     );
-    float hueRapid = fract(hueBase + highN * (0.14 + 0.14 * sin(uTime * 4.0)));
-    float sat = clamp(0.64 + 0.28 * highN + 0.1 * fractalPattern, 0.0, 1.0);
+    float hueRapid = fract(hueBase + highN * (0.22 + 0.22 * sin(uTime * 4.0)));
+    float sat = clamp(0.64 + 0.45 * highN + 0.1 * fractalPattern, 0.0, 1.0);
 
     vec3 hueA = hsl2rgb(vec3(hueRapid, sat, 0.52 + 0.06 * sin(tunnelV * 0.23)));
     vec3 hueB = hsl2rgb(vec3(fract(hueRapid + 0.23), clamp(sat + 0.08, 0.0, 1.0), 0.5));
