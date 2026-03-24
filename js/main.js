@@ -185,12 +185,15 @@ const ui = new UIController({
   onObjectDistanceChange: () => {},
   onPrimaryColorChange: (hex) => {
     state.customColors.color1 = hexToRgbArray(hex);
+    state.colorMode = 'custom';
   },
   onSecondaryColorChange: (hex) => {
     state.customColors.color2 = hexToRgbArray(hex);
+    state.colorMode = 'custom';
   },
   onBgColorChange: (hex) => {
     state.customColors.bgColor = hexToRgbArray(hex);
+    state.colorMode = 'custom';
   },
   onObjectColorChange: () => {},
   onObjectColorModeChange: () => {},
@@ -270,24 +273,21 @@ renderer.loadObjectUrl('./assets/cyber_core.glb').then(() => {
 function switchTheme(key) {
   const t = themes[key];
   if (!t) return;
+  
+  state.colorMode = 'theme'; // Reset to theme mode
   state.target = { ...t };
   state.transitionProgress = 0;
 
-  if (state.colorMode === 'theme') {
-    ui.setPrimaryColor(rgbArrayToHex(t.color1));
-    ui.setSecondaryColor(rgbArrayToHex(t.color2));
-    ui.setBackgroundColor(rgbArrayToHex(t.bgColor));
-  }
+  // Sync color pickers with new theme colors immediately
+  ui.setPrimaryColor(rgbArrayToHex(t.color1));
+  ui.setSecondaryColor(rgbArrayToHex(t.color2));
+  ui.setBackgroundColor(rgbArrayToHex(t.bgColor));
+
   ui.setTunnelControls({
     wave: t.waveIntensity ?? 0.6,
     twist: t.twistAmount ?? 0.7,
     chaos: t.chaosAmount ?? 0.55,
   });
-
-  // Sync color pickers with new theme colors
-  ui.setPrimaryColor(rgbArrayToHex(t.color1));
-  ui.setSecondaryColor(rgbArrayToHex(t.color2));
-  ui.setBackgroundColor(rgbArrayToHex(t.bgColor));
 }
 
 function applyLivePreset(presetKey) {
