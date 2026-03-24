@@ -25,6 +25,15 @@ export class UIController {
       labelObjectGap: document.getElementById('label-object-gap'),
       objectGapSlider: document.getElementById('object-gap-slider'),
       objectGapValue: document.getElementById('object-gap-value'),
+      objectRotXLabel: document.getElementById('label-object-rot-x'),
+      objectRotXSlider: document.getElementById('object-rot-x-slider'),
+      objectRotXValue: document.getElementById('object-rot-x-value'),
+      objectRotYLabel: document.getElementById('label-object-rot-y'),
+      objectRotYSlider: document.getElementById('object-rot-y-slider'),
+      objectRotYValue: document.getElementById('object-rot-y-value'),
+      objectRotZLabel: document.getElementById('label-object-rot-z'),
+      objectRotZSlider: document.getElementById('object-rot-z-slider'),
+      objectRotZValue: document.getElementById('object-rot-z-value'),
       labelAudio: document.getElementById('label-audio'),
       labelControls: document.getElementById('label-controls'),
       labelSpeed: document.getElementById('label-speed'),
@@ -115,6 +124,7 @@ export class UIController {
         chaos: 'Hỗn loạn',
         particleShape: 'Shape hạt',
         objectDistance: 'Khoảng cách',
+        objectGap: 'Khoảng cách',
         automix: 'Trộn ngẫu nhiên',
         kaleidoscopeAuto: 'AUTO MIX KALEIDOSCOPE',
         cooldown: 'Switch Cooldown (ms)',
@@ -197,6 +207,7 @@ export class UIController {
         chaos: 'Chaos',
         particleShape: 'Particle Shape',
         objectDistance: 'Object Distance',
+        objectGap: 'Gap / Distance',
         automix: 'Random Mix',
         kaleidoscopeAuto: 'AUTO MIX KALEIDOSCOPE',
         cooldown: 'Switch Cooldown (ms)',
@@ -281,6 +292,10 @@ export class UIController {
     this._bindSlider('objectSizeSlider', 'objectSizeValue', v => this.callbacks.onObjectSizeChange(v / 100));
     this._bindSlider('cloneCountSlider', 'cloneCountValue', v => this.callbacks.onCloneCountChange(v));
     this._bindSlider('objectGapSlider', 'objectGapValue', v => this.callbacks.onObjectGapChange(v / 100));
+    
+    this._bindSlider('objectRotXSlider', 'objectRotXValue', v => this.callbacks.onObjectRotXChange(v));
+    this._bindSlider('objectRotYSlider', 'objectRotYValue', v => this.callbacks.onObjectRotYChange(v));
+    this._bindSlider('objectRotZSlider', 'objectRotZValue', v => this.callbacks.onObjectRotZChange(v));
     this.els.cloneFreeFlyToggle.addEventListener('change', e => {
       this.callbacks.onCloneFreeFlyChange(e.target.checked);
       this._updateGapSliderState(e.target.checked);
@@ -499,7 +514,12 @@ export class UIController {
     this.els.objectSizeLabel.textContent = t.objectSize;
     this.els.cloneCountLabel.textContent = t.cloneCount;
     this.els.cloneFreeFlyLabel.textContent = t.cloneFreeFly;
-    if (this.els.labelObjectGap) this.els.labelObjectGap.textContent = t.objectGap || 'Khoảng cách';
+    if (this.els.labelObjectGap) this.els.labelObjectGap.textContent = t.objectGap || (lang === 'en' ? 'Distance' : 'Khoảng cách');
+    
+    if (this.els.objectRotXLabel) this.els.objectRotXLabel.textContent = t.objectRotX;
+    if (this.els.objectRotYLabel) this.els.objectRotYLabel.textContent = t.objectRotY;
+    if (this.els.objectRotZLabel) this.els.objectRotZLabel.textContent = t.objectRotZ;
+    
     this.els.randomizeText.textContent = t.randomize;
     this.els.togglePanel.title = t.toggleTitle;
     this.els.langToggle.title = t.langTitle;

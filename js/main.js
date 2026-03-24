@@ -36,6 +36,7 @@ const state = {
   objectRotation: { x: 180, y: 180, z: 180 },
   quality: isMobile ? 0.82 : 1.0,
   fpsEstimate: 60,
+  colorMode: 'theme', // Default to theme mode for color sync
 
   // Current interpolated theme
   current: { ...themes.neonCyberpunk },
@@ -282,6 +283,11 @@ function switchTheme(key) {
     twist: t.twistAmount ?? 0.7,
     chaos: t.chaosAmount ?? 0.55,
   });
+
+  // Sync color pickers with new theme colors
+  ui.setPrimaryColor(rgbArrayToHex(t.color1));
+  ui.setSecondaryColor(rgbArrayToHex(t.color2));
+  ui.setBackgroundColor(rgbArrayToHex(t.bgColor));
 }
 
 function applyLivePreset(presetKey) {
