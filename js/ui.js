@@ -402,7 +402,7 @@ export class UIController {
   }
 
   setCloneCount(count) {
-    const c = Math.max(1, Math.min(10, Number(count) || 6));
+    const c = Math.max(1, Math.min(20, Number(count) || 6));
     this.els.cloneCountSlider.value = String(c);
     this.els.cloneCountValue.textContent = String(c);
   }

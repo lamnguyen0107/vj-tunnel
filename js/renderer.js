@@ -4,6 +4,7 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { vertexShader, fragmentShader } from './shaders.js';
 
 export class TunnelRenderer {
@@ -133,6 +134,12 @@ export class TunnelRenderer {
     this._mouseCurrent = { x: 0, y: 0 };
 
     this._loader = new GLTFLoader();
+    
+    // Add DRACO support for optimized loading of compressed models
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+    this._loader.setDRACOLoader(dracoLoader);
+
     this._objectBaseScale = 1;
     this.objectScale = 1;
     this.objectRotationDeg = { x: 180, y: 180, z: 180 };
@@ -231,7 +238,7 @@ export class TunnelRenderer {
   }
 
   setCloneOptions(count, freeFly) {
-    this.cloneCount = Math.max(1, Math.min(10, Number(count) || 6));
+    this.cloneCount = Math.max(1, Math.min(20, Number(count) || 6));
     this.cloneFreeFly = Boolean(freeFly);
     if (this._isCustomModel && this._customModelTemplate) {
       const ring = this._buildCustomRing(this._customModelTemplate, this.cloneCount);
@@ -270,8 +277,18 @@ export class TunnelRenderer {
   }
 
   async loadObjectUrl(url) {
-    const gltf = await this._loader.loadAsync(url);
-    await this._applyLoadedModel(gltf.scene);
+    try {
+      console.log(`[TunnelRenderer] Loading model from: ${url}`);
+      const gltf = await this._loader.loadAsync(url);
+      console.log(`[TunnelRenderer] Model loaded successfully: ${url}`);
+      await this._applyLoadedModel(gltf.scene);
+      return true;
+    } catch (err) {
+      console.error(`[TunnelRenderer] Failed to load model from ${url}:`, err);
+      // Fallback is already initialized in constructor, so we don't need to do extra work here
+      // but we return false so main.js can react if needed.
+      return false;
+    }
   }
 
   async loadObjectFile(file) {

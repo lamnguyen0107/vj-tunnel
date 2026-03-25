@@ -55,7 +55,9 @@ export const fragmentShader = /* glsl */ `
   }
 
   float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
   }
 
   float noise(vec2 p) {
@@ -80,13 +82,12 @@ export const fragmentShader = /* glsl */ `
   vec2 kaleidoscope(vec2 uv, float segments, float mode, float angleOffset) {
     if (mode < 0.5) {
       // Mode 0: Radial (Standard)
-      // Ensure segments is an integer to avoid broken UV wrap seams
+      float radius = length(uv);
+      if (radius < 0.0001) return uv;
       float s = max(1.0, floor(segments + 0.5));
       float angle = atan(uv.y, uv.x) + angleOffset;
-      float radius = length(uv);
       float segAngle = TAU / s;
       
-      // Add TAU * 10.0 to prevent negative angle mod bugs in WebGL/Windows D3D
       angle = mod(angle + TAU * 10.0, segAngle);
       angle = abs(angle - segAngle * 0.5);
       
@@ -112,6 +113,7 @@ export const fragmentShader = /* glsl */ `
     } else if (mode < 3.5) {
       // Mode 3: Spiral
       float radius = length(uv);
+      if (radius < 0.0001) return uv;
       float angle = atan(uv.y, uv.x) + angleOffset + radius * segments * 0.5;
       float segAngle = TAU / 6.0;
       angle = mod(angle, segAngle);
@@ -159,10 +161,14 @@ export const fragmentShader = /* glsl */ `
       return vec2(length(g));
     } else {
       // Mode 9: Ribbon
+      float radius = length(uv);
+      if (radius < 0.0001) return uv;
       uv = rotate2d(uv, angleOffset);
       float a = atan(uv.y, uv.x);
-      float r = length(uv);
-      r += sin(a * floor(segments) + uTime) * 0.15;
+      // Smooth the ribbon effect: reduce intensity and fade it out near the center 
+      // to prevents coordinate "pinching" and jagged folding glitches.
+      float ripple = sin(a * floor(segments) + uTime) * 0.11 * smoothstep(0.05, 0.3, radius);
+      float r = max(radius + ripple, 0.01);
       return vec2(cos(a), sin(a)) * r;
     }
   }

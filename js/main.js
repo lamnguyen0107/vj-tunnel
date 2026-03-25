@@ -133,7 +133,7 @@ const ui = new UIController({
     renderer.setObjectRotation(state.objectRotation.x, state.objectRotation.y, state.objectRotation.z);
   },
   onCloneCountChange: (count) => {
-    state.cloneCount = Math.max(1, Math.min(10, Number(count) || 6));
+    state.cloneCount = Math.max(1, Math.min(20, Number(count) || 6));
     renderer.setCloneOptions(state.cloneCount, state.cloneFreeFly);
   },
   onCloneFreeFlyChange: (enabled) => {
