@@ -336,7 +336,7 @@ export const fragmentShader = /* glsl */ `
     color *= (1.0 + uGlowIntensity * 0.45 * clamp(brightness, 0.0, 1.0));
     
     // Beat Kick - Kaleidoscope Flash (Using theme color instead of white for less 'chói')
-    color += uKaleidoscopeFlash * 0.4 * tunnelColor;
+    color += uKaleidoscopeFlash * 0.5 * mix(tunnelColor, vec3(1.0), 0.2);
     
     gl_FragColor = vec4(color, 1.0);
   }
